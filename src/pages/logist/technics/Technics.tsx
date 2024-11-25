@@ -6,7 +6,7 @@ import { useLocation } from "react-router";
 import "./technics.css"
 import { buttons } from "../config/utils";
 import leftVector from "../../../images/leftVector.png"
-import { useTechnicRouter } from "../../../router/TechnicCreator";
+import { useTechnicRouter } from "../../../router/PageCreators/TechnicCreator";
 import { url } from "../../../config";
 
 interface equipmentTypeResponsesTypes{
@@ -23,6 +23,7 @@ interface TechnicTypes{
 }
 
 const Technics = () => {
+
     const [technics, setTechnics] = useState<TechnicTypes[]>([]);
     const [allTechnics, setAllTechnics] = useState<TechnicTypes[]>([]);
     const [technic, setTechnic] = useState<string | null>(null);
@@ -35,12 +36,13 @@ const Technics = () => {
     
     const handleClickToTechnic = (e: React.MouseEvent<HTMLElement>): void => {
         const clickedElement = e.target as HTMLElement;
-        const childTd = clickedElement.closest('td');
-        const number = childTd?.previousElementSibling?.previousElementSibling?.textContent
-        if (number) {
-            setTechnic(number);
-        };
+        const childTd = clickedElement.closest('tr');
+        const technicId = childTd?.getAttribute('data-id');
+        if (technicId) {
+            setTechnic(technicId); 
+        }
     };
+
     useEffect(() => {
         if (technic) {
             createTechnicRoute(technic);
@@ -53,6 +55,7 @@ const Technics = () => {
 
     useEffect(() => {
         setIsPending(true)
+        console.log('rfghbfcxghb')
         const myfetch = async () => {
             const token = document.cookie.split('=')[1]
             const requestOption: RequestInit  = {
@@ -91,20 +94,20 @@ const Technics = () => {
             {technics.map((technic) => (
                 technic.equipmentTypeResponses.length > 0 ? (
                     technic.equipmentTypeResponses.map((one) => (
-                        <tr key={one.id} onClick={handleClickToTechnic}>
-                            <td className="left_td" onClick={(e) => {
-                                e.stopPropagation(); 
-                            }}>
-                                {technic.name}
-                            </td>
-                            <td className="left_td">
-                                {one.type}
-                            </td>
-                            <td className="left_td last_t">
-                                <div className="status">{one.count}</div>
-                                <img className="leftVector" src={leftVector} alt="Подробнее" />
-                            </td>
-                        </tr>
+                        <tr key={one.id} data-id={technic.id} onClick={handleClickToTechnic}>
+                        <td className="left_td" onClick={(e) => {
+                            e.stopPropagation(); 
+                        }}>
+                            {technic.name}
+                        </td>
+                        <td className="left_td">
+                            {one.type}
+                        </td>
+                        <td className="left_td last_t">
+                            <div className="status">{one.count}</div>
+                            <img className="leftVector" src={leftVector} alt="Подробнее" />
+                        </td>
+                    </tr>
                     ))
                 ) : (
                     <tr key={technic.id} onClick={handleClickToTechnic}>

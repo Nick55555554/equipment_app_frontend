@@ -1,6 +1,6 @@
-import Summary_Apply from "../pages/logist/summary_applies/summary_apply";
-import pagesData from "./pagesData";
-import { useRouter } from "./RouterContext";
+import Summary_Apply from "../../pages/logist/summary_applies/summary_apply";
+import pagesData from "../pagesData";
+import { useRouter } from "../RouterContext";
 
 export const useSummaryApplyRouter = () => {
     const { addRoute } = useRouter();

@@ -6,7 +6,7 @@ import { useLocation } from "react-router";
 import "./technics.css"
 import { buttons } from "../config/utils";
 import leftVector from "../../../images/leftVector.png"
-import { useTechnicRouter } from "../../../router/TechnicCreator";
+import { useTechnicRouter } from "../../../router/PageCreators/TechnicCreator";
 interface TechnicTypes{
     id: number;
     number:string;

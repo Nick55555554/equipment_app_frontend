@@ -24,15 +24,15 @@ const Technic:React.FC<technicProps> = ({number}) => {
             {
                 label: 'Активная',
                 data: [65, 59, 80, 81, 56, 55, 40,65, 59, 80, 81, 56 ],
-                backgroundColor: 'rgba(213, 218, 198, 1)', 
+                backgroundColor: 'rgba(213, 218, 198, )', 
                 borderColor: 'rgb(213, 218, 198)',
                 borderWidth: 1,
             },
             {
                 label: 'Простаивающая',
                 data: [35, 41, 20, 19, 44, 45, 60,65, 59, 80, 81], 
-                backgroundColor: 'rgba(255, 99, 132, 0.5)', 
-                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor:'rgb(174, 179, 159)', 
+                borderColor: 'rgb(174, 179, 159)', 
                 borderWidth: 1,
             },
         ]

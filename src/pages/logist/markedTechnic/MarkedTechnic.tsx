@@ -3,59 +3,125 @@ import Header from "../../../components/Ordinary/header";
 import LeftPanel from "../../../components/Ordinary/leftPanel";
 import { buttons } from "../config/utils";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useTechnicRouter } from "../../../router/TechnicCreator";
 import leftVector from "../../../images/leftVector.png"
+import { url } from "../../../config";
+import './markedTechnic.css'
+import { useMarkedTechnicRouter } from "../../../router/PageCreators/MarkedTechnicCreator"
 
-interface TechnicTypes{
+export interface equipmentType{
     id: number;
-    number:string;
-    vid:string;
-    type: string;
+    name: string;
+    image: string;
 }
 
-const MarkedTechnic = () => {
+export interface equipmentTypeResponsesTypes{
+    id: number;
+    type: string;
+    equipment: equipmentType;
+}
 
-    const [technics, setTechnics] = useState<TechnicTypes[]>([]);
-    const [allTechnics, setAllTechnics] = useState<TechnicTypes[]>();
+interface unitType{
+    id:number;
+    address: string;
+    latitude: number;
+    longitude: number;
+}
+
+interface baseType{
+    id: number;
+    unit: unitType
+    address: string;
+    latitude: number;
+    longitude: number;
+}
+
+export interface markedTechnicTypes{
+    id: number;
+    licensePlate:string;
+    carBrand: string;
+    base: baseType;
+    equipmentType: equipmentTypeResponsesTypes;
+}
+
+const MarkedTechnic:React.FC  = () => {
+
+    const [technics, setTechnics] = useState<markedTechnicTypes[]>([]);
+    const [allTechnics, setAllTechnics] = useState<markedTechnicTypes[]>([]);
     const [technic, setTechnic] = useState<string | null>(null);
     const location = useLocation();
     const navigate = useNavigate();
-    const {createTechnicRoute} = useTechnicRouter();
+    const {createTechnicRoute} = useMarkedTechnicRouter();
+    const [isPending, setIsPending] = useState<boolean>(false);
 
-
+    useEffect(() => {
+        setIsPending(true)
+        const myfetch = async () => {
+            const token = document.cookie.split('=')[1]
+            const requestOption: RequestInit  = {
+                method: "GET",
+                headers: {
+                    "Content-type": 'application/json',
+                    "ngrok-skip-browser-warning": "69420",
+                    "Authorization": `Bearer ${token}`
+                    
+                }
+            }
+            try {
+                const response = await fetch(`${url}/named_equipment`, requestOption)
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                const responseData: markedTechnicTypes[] = await response.json();
+                console.log("Response data:", responseData);
+                setTechnics(responseData);
+                setAllTechnics(responseData);
+                setIsPending(false);
+            } catch(error) {
+                console.log("Fetch error:", error);
+                setIsPending(false)
+            }
+        }
+        myfetch();
+    },[])
     
-    const handleClickToTechnic = (e: React.MouseEvent<HTMLElement>): void => {
+    const handleClickToMarkedTechnic = (e: React.MouseEvent<HTMLElement>): void => {
         const clickedElement = e.target as HTMLElement;
-        const childTd = clickedElement.closest('td');
-        const number = childTd?.previousElementSibling?.previousElementSibling?.textContent
-        if (number) {
-            setTechnic(number);
-        };
+        const childTd = clickedElement.closest('tr');
+        const technicId = childTd?.getAttribute('data-id');
+        if (technicId) {
+            setTechnic(technicId); 
+        }
     };
+
     useEffect(() => {
         if (technic) {
             createTechnicRoute(technic);
             localStorage.setItem(location.pathname,location.pathname)
-            navigate(`/technic${technic}`);
+            navigate(`/markedtechnic${technic}`);
         }
 
     }, [technic, navigate]);
 
-    const getTechnics = ({technics}: {technics: TechnicTypes[]}) => {
+    const getTechnics = ({technics}: {technics: markedTechnicTypes[]}) => {
         return (
             <tbody>
+
                 {technics.map((technic) => (
-                    <tr key={technic.id} onClick={handleClickToTechnic}>
-                        <td className="left_td" onClick={(e) => {
+                    <tr key={technic.id} data-id={technic.id} onClick={handleClickToMarkedTechnic}>
+                        <td className="left_td"  onClick={(e) => {
                             e.stopPropagation(); 
                         }}>
-                            {technic.number}
+                            {technic.licensePlate}
                         </td>
                         <td className="left_td">
-                            {technic.vid}
+                            {technic.carBrand}
+                        </td>
+                        <td className="left_td">
+                        {technic.equipmentType ? technic.equipmentType.type : 'Неизвестно'}
                         </td>
                         <td className="left_td last_t">
-                        <div className="status">{technic.type}</div><img className="leftVector" src={leftVector} alt="Подробнее" />
+                        <div className="status">{technic.carBrand}</div><img className="leftVector" src={leftVector} alt="Подробнее" />
                         </td>
                     </tr>
                 ))}
@@ -86,8 +152,6 @@ const MarkedTechnic = () => {
                         {getTechnics({ technics })}
                 </table>
             </div>
-
-
         </div>
     )
 }

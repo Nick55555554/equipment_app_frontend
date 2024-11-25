@@ -8,7 +8,7 @@ import "./summary_applies.css"
 import { buttons } from "../config/utils";
 import leftVector from "../../../images/leftVector.png"
 import { url } from "../../../config";
-import { useSummaryApplyRouter } from "../../../router/SummaryApplyCreator";
+import { useSummaryApplyRouter } from "../../../router/PageCreators/SummaryApplyCreator";
 
 interface Summary_appliesTypes{
     id: number;

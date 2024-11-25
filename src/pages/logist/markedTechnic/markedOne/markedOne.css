@@ -1,0 +1,96 @@
+.markedtechnic{
+    display: grid;
+    max-width: 99%;
+    grid-template-rows: 14vh 1fr; 
+    grid-template-columns: 1fr 4fr;
+    grid-template-areas: 
+    "leftPanel nav" 
+    "leftPanel table";
+    gap: 20px;
+    min-height: 100vh; 
+    margin: 0;
+}
+
+.label3first{
+    text-align: start;
+    display: flex;
+    font-size: 36px;
+    font-weight: 700;
+    padding-left:30px;
+}
+.label3{
+    text-align: start;
+    display: flex;
+    font-size: 36px;
+    font-weight: 700;
+    padding: 30px 30px;
+}
+.left_label{
+    position: absolute;
+    padding: 0px 750px 400px 0px;
+}
+.doughutChartmark {
+    height: auto !important;
+    width: 100% !important;
+}
+.divdoughutChartmark{
+    position: relative;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    bottom: 60px;
+    left:5%
+}
+.infoTechnicMark{
+    grid-area: table;
+}
+.infoTechnic2{
+    background-color: white;
+    border-radius: 10px;
+    height: 150px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+}
+.agenda{
+    background-color: white;
+    border-radius: 10px;
+    height: 512px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+.bigAnalytishMarkfirst{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    height: 480px;
+}
+
+.white{
+    background-color: white;
+    border-radius: 10px;
+}
+.smallAnalytishMark{
+    width: 450px;
+    background-color: white;
+    border-radius: 10px;
+    height: 412px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+}
+.smallAnalytishMarkBig{
+    width: 580px;
+    background-color: white;
+    border-radius: 10px;
+    height: 412px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+}
+.centerIMG{
+    margin: 30% 0 0 5%;
+    width: 90%;
+    height: auto;
+}

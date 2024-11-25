@@ -2,7 +2,7 @@ import Header from "../../../components/Ordinary/header/index";
 import LeftPanel from "../../../components/Ordinary/leftPanel";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useApplyRouter } from "../../../router/ApplyCreator";
+import { useApplyRouter } from "../../../router/PageCreators/ApplyCreator";
 import { useLocation } from "react-router";
 import "./applies.css"
 import { buttons } from "../config/utils";
@@ -192,7 +192,7 @@ const Applies = () => {
                     <thead>
                         <tr>
                             <th className="left_th">Номер заявки</th>
-                            <th className="left_th" >ФИО</th>
+                            <th className="left_th" >Мастер</th>
                             <th className="left_th last_t" >Статус</th>
                         </tr>
                     </thead>

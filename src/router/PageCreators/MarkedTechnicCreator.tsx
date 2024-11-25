@@ -1,14 +1,14 @@
-import Technic from "../pages/logist/technics/technic";
-import pagesData from "./pagesData";
-import { useRouter } from "./RouterContext";
+import pagesData from "../pagesData";
+import { useRouter } from "../RouterContext";
+import MarkedOne from "../../pages/logist/markedTechnic/markedOne/index"
 
-export const useTechnicRouter = () => {
+export const useMarkedTechnicRouter = () => {
     const { addRoute } = useRouter();
     
     const createTechnicRoute = (number: string) => {
         const newTechnic = {
-            path: `/technic${number}`,
-            element: <Technic number={number} />,
+            path: `/markedtechnic${number}`,
+            element: <MarkedOne number={number} />,
             title: 'Главная Страница'
         };
 
@@ -16,7 +16,6 @@ export const useTechnicRouter = () => {
         if (!exists) {
             pagesData.push(newTechnic);
             addRoute(newTechnic);
-            console.log('Создано', pagesData);
         }
     };
 

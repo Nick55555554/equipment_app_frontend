@@ -2,7 +2,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom"
 import { routerType } from "./pagesData"
 import { useRouter } from "./RouterContext";
 import { useEffect } from "react";
-import { useApplyRouter } from "./ApplyCreator";
+import { useApplyRouter } from "./PageCreators/ApplyCreator";
 
 
 const Router = () => {

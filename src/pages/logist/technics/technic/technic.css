@@ -1,4 +1,4 @@
-.technic{
+.technicTrue{
     display: grid;
     max-width: 99%;
     grid-template-rows: 14vh 1fr; 
@@ -10,13 +10,18 @@
     min-height: 100vh; 
     margin: 0;
 }
+
+
 .label3{
     text-align: start;
     display: flex;
     font-size: 36px;
     font-weight: 700;
     padding: 30px 30px;
-
+}
+.left_label{
+    position: absolute;
+    padding: 0px 750px 400px 0px;
 }
 
 .infoTechnic{
@@ -25,8 +30,9 @@
 .infoTechnic2{
     background-color: white;
     border-radius: 10px;
-    height: 240px;
+    height: 150px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
 }
 .agenda{
     background-color: white;
@@ -40,8 +46,9 @@
     justify-content: space-around;
     align-items: center;
     height: 536px;
-    margin: 30px 0;
+    margin: 20px 0;
 }
+
 .white{
     background-color: white;
     border-radius: 10px;
@@ -69,8 +76,66 @@
 .lineChart{
     width: 80% !important;
     height: 80% !important;
+    margin-top: 100px;
+
+}
+.II{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    min-height: 536px;
+    height: auto;
+}
+.labelII{
+    padding: 30px 90px;
 }
 .IIText{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
     font-size: 24px;
-    padding: 40px 4%;
+    padding: 10px 90px;
+}
+.analytish_Ul{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    padding-top: 15%;
+}
+.smallDate{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    line-height: 40px;
+    box-shadow: none;
+}
+.inline{
+    display: inline-block;
+}
+.inline::before{
+    content: '•'; 
+    color: black;
+    margin: 0px 10px;
+}
+.analytish_Li{
+    font-size: 20px;
+    font-weight: 550;
+    min-height: 50px;
+}
+.special{
+    padding-left: 20px;
+}
+.kalendar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90%;
+    width: 40%;
+    font-size: 32px;
+    font-weight: 600;
+    color:rgb(142, 153, 153);
+    border: 1px solid black;
+    
 }

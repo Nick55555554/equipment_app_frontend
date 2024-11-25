@@ -45,8 +45,7 @@ const Auth:React.FC = () => {
                 case "ROLE_DISPATCHER":
                     navigate('/dispatcher');
                     break;
-            }
-            navigate('/')           
+            }         
         } catch(error) {
             console.log("Fetch error:", error);
         } finally {

@@ -1,7 +1,7 @@
 import Header from "../../../../components/Ordinary/header/index"
 import LeftPanel from "../../../../components/Ordinary/leftPanel/index"
 import React, {useEffect, useRef, useState } from "react"
-import { buttons } from "../../config/utils"
+import { buttons, formatData } from "../../config/utils"
 import './apply.css'
 import musor from "../../../../images/mysor.svg"
 import { url } from "../../../../config"
@@ -56,11 +56,17 @@ const Apply:React.FC<applyProps> = ({number}) => {
     const [showTechnic, setShowTechnic] = useState<boolean>(false);;
     const settingsApplies = useRef<HTMLDivElement | null>(null);
     const [selectedTechnics,setSelectedTechnics] = useState<getEquipmentType[] | null>([])
-    const [kolvo, setKolvo] = useState<number>(1);
+    const [kolvo, setKolvo] = useState<Record<number, number>>({});
+    const updateKolvo = (id: number, delta: number) => {
+        setKolvo(prev => ({
+            ...prev,
+            [id]: Math.max((prev[id] || 0) + delta, 0) 
+        }));
+    };
+
     const [info, setInfo] = useState<getApplyType | null>(null);
-
-
     const [typeClickers, setTypeClickers] = useState<Record<number, boolean>>({});
+
     const handleClicker = async (e: React.MouseEvent<HTMLElement>) =>  {
         setIsPending(true);
         const token = document.cookie.split('=')[1]
@@ -103,7 +109,7 @@ const Apply:React.FC<applyProps> = ({number}) => {
             equipmentTypeId: 0,
             equipmentType: "",
             licensePlateNumber: null,
-            arrivalTime: "9:00",
+            arrivalTime: "2023-12-03T09:00:00Z",
             workDuration: "1:00",
             selfId: uuidv4(),
         };
@@ -171,8 +177,8 @@ const Apply:React.FC<applyProps> = ({number}) => {
             <div className="box">
                 <div className="heighWeight">ФИО мастера:<span className="lowWeight">{info?.workerName}</span></div>
                 <div className="heighWeight">Адрес объекта:<span className="lowWeight">{info?.workplaceAddress}</span></div>
-                <div className="heighWeight">Расстояние до объекта:<span className="lowWeight">{info?.distance}</span></div>
-                <div className="heighWeight">Дата подачи на объект:<span className="lowWeight">{info?.date}</span></div>
+                <div className="heighWeight">Расстояние до объекта:<span className="lowWeight">{info?.distance} км</span></div>
+                <div className="heighWeight">Дата подачи на объект:<span className="lowWeight">{formatData(info?.date)}</span></div>
                 <div className="heighWeight">Техника <button ref={button} onClick={handleClicker}
                 className="button_apply">{isPending ? 'Загрузка...' : 'Добавить технику'}</button></div>
                 <div className="settings_applies" ref={settingsApplies}>
@@ -206,18 +212,13 @@ const Apply:React.FC<applyProps> = ({number}) => {
                                 <div className="big">
                                     Количество
                                     <form  className="kol-vo">
-                                        <div className="minus" onClick={()=>{
-                                            if(kolvo>=1)
-                                                {setKolvo(kolvo-1)} 
-                                        }}>-</div>
-                                        {kolvo}
-                                        <div className="plus" onClick={()=>{
-                                            setKolvo(kolvo+1)
-                                        }}>+</div>
+                                        <div className="minus" onClick={() => updateKolvo(one.id, -1)}>-</div>
+                                        {kolvo[one.id] || 0} 
+                                        <div className="plus" onClick={() => updateKolvo(one.id, 1)}>+</div>
                                     </form>
                                 </div>
                                 <div className="big"> Время подачи
-                                    <div className="time_send">{one?.arrivalTime}</div>
+                                    <div className="time_send">{formatData(one.arrivalTime)}</div>
                                 </div>
                                 <div className="big"> Время работы
                                     <div className="time_work">{one?.workDuration}</div>
