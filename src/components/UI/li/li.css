@@ -1,0 +1,25 @@
+.littleLi{
+    margin-left: 5px;
+    position: relative;
+    text-align: start;
+    font-size: 22px;
+    word-wrap: break-word;
+    padding-left: 5px;
+}
+.li{
+    margin-bottom: 20px;
+    display: flex; 
+    align-items: center;
+}
+.li:hover{
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: 0.1s ease-in;
+}
+.last-item {
+    position: fixed;
+    bottom: 0;
+}
+.last-littleItem{
+    width: 160px;
+}

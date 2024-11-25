@@ -1,0 +1,42 @@
+.leftPanel{
+    grid-area: leftPanel;
+    left: 0; 
+    background-color: rgb(160, 170, 147);
+    height: 100%;
+}
+.fixedPanel{
+    position: fixed;
+    width: 20%;
+
+}
+.name{
+    display: block;
+    font-weight: 600;
+    font-size: 22px;
+}
+.status{
+    display: block;
+    font-size: 18px;
+}
+.data{
+    position: relative;
+    top:30px;
+    margin: 0 -20px 0 40px;
+    display: inline-block;
+    width: 60%;
+    height: auto;
+}
+.logoutIcon{
+    position: relative;
+    top:30px;
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+}
+.ul{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: 100px 0 0 0;
+}

@@ -1,0 +1,81 @@
+.home{
+    display: grid;
+    max-width: 99%;
+    grid-template-rows: 14vh 7vh 1fr; 
+    grid-template-columns: 1fr 4fr;
+    grid-template-areas: 
+    "leftPanel nav" 
+    "leftPanel info"
+    "leftPanel table";
+    gap: 20px;
+    min-height: 99vh; 
+    margin: 0;
+}
+
+.info{
+    grid-area: info;
+
+}
+.poisk{
+    display: flex;
+    background-color: white;
+    margin-top: 10px;
+    height: 60%;
+    border-radius: 10px;
+    align-items: center;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+
+.table{
+    grid-area: table;
+    background-color: white;
+    border-radius: 1%;
+    margin-bottom: 1%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-height: 100%;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    width: 100%;
+}
+.table-container {
+    border-radius: 2%;
+    max-height: 500px; 
+    overflow-y: auto;
+}
+
+.table tr:last-child td {
+    border-bottom: none; 
+}
+.label{
+    font-size: 36px;
+    font-weight: 700;
+}
+.head{
+    font-size: 28px;
+    font-weight: 620;
+    padding: 10px 0 10px 0;
+}
+thead{
+    background-color: RGB(174, 179, 159,0.3);
+}
+.fio{
+    padding-left: 20px;
+    text-align: start;
+}
+.td{
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+}
+tr {
+    height: 55px;
+}
+.last_t{
+    width: 33%;
+    padding-bottom: 10px;
+}
+

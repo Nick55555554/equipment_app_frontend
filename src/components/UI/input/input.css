@@ -1,0 +1,33 @@
+.border{
+    position: relative;
+    display: flex;
+    margin-left: 2%;
+    height: 55%;
+    border: 1px solid black;
+    border-radius: 8px;
+    align-items: center;
+    
+}
+
+
+.input{
+    position: relative;
+    display: inline-block;
+    height: 86%;
+    width: 80%;
+    border: none;
+    background-color: none;
+    text-align: left;
+    font-size: 20px;
+    
+}
+.input:focus {
+    outline: none;
+}
+.search{
+    position: relative;
+    padding-left: 12px;
+    display: inline-block;
+    z-index: 5;
+    align-self:center;
+}

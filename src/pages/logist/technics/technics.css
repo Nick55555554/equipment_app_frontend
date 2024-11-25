@@ -1,0 +1,126 @@
+.technics{
+    display: grid;
+    max-width: 99%;
+    grid-template-rows: 14vh 5vh 1fr; 
+    grid-template-columns: 1fr 4fr;
+    grid-template-areas: 
+    "leftPanel nav" 
+    "leftPanel info1"
+    "leftPanel table";
+    gap: 20px;
+    min-height: 100vh; 
+    margin: 0;
+}
+
+.infotechnic{
+    grid-area: info1;
+}
+.button{
+    height: 50%;
+    width: 30%;
+    border-radius: 5px;
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: 500;
+    background-color: white;
+}
+.button:hover{
+    background-color: black;
+    color:white;
+}
+
+.poisk_technics{
+    display: flex;
+    background-color: white;
+    margin-top: 10px;
+    height: 60%;
+    border-radius: 10px;
+    align-items: center;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    justify-content:space-around;
+    padding-right: 2%;
+}
+.table{
+    grid-area: table;
+    background-color: white;
+    border-radius: 1%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-height: 100%;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar {
+    display: none; 
+}
+.table-container-technic {
+    border-radius: 4%;
+    max-height: 410px; 
+    overflow: hidden;
+    overflow-y: scroll;
+}
+.table tr:last-child td {
+    border-bottom: none; 
+}
+.label{
+    font-size: 32px;
+    font-weight: 700;
+}
+.left_th{
+    font-size: 28px;
+    font-weight: 620;
+    padding: 10px 0 10px 20px;
+    text-align: start;
+}
+.left_td{
+    font-size: 20px;
+    font-weight: 500;
+    text-align: start;
+    padding: 10px 0 10px 30px;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black; 
+    height: 55px;
+}
+tr {
+    z-index: 1;
+}
+.leftVector{
+    margin-left: 330px;
+}
+.leftVector:hover{
+    cursor: pointer;
+    transform: scale(1.04);
+}
+.status{
+    height: 0%;
+    min-width: 100px;
+    line-height: 45px;
+}
+.circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%; 
+    background-color: #ffffff;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    top:20px
+}
+
+.checkmark {
+    display: none;
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+    text-align: center;
+}
+.active {
+    background-color: black;
+}
+.circle.active .checkmark {
+    display: flex; 
+    align-items: center;
+    padding-left: 2px;
+    color:white;
+}

@@ -1,0 +1,32 @@
+.header{
+    grid-area: nav;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    margin-top: 1%;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+.bellIcon:hover{
+    cursor: pointer;
+}
+.bellIcon{
+    width: 30px;
+    height: 36px;
+    opacity: 0.8;
+}
+.settingIcon{
+    width: 33px;
+    height: 36px;
+    opacity: 0.8;
+}
+.settingIcon:hover{
+    cursor: pointer;
+}
+.icons{
+    width: 120px;
+    display: flex;
+    justify-content: space-around;
+    padding-right: 10px;
+}

@@ -1,0 +1,7 @@
+def Hanoi(n,start,finish):
+    if n == 0: return None
+    procedure = 6 - start - finish
+    Hanoi(n-1,start, procedure)
+    print(f"{start} -> {finish}")
+    Hanoi(n-1, procedure,finish)
+Hanoi(4,1,2)
