@@ -5,14 +5,13 @@ import { useNavigate } from "react-router";
 
 import { useLocation } from "react-router";
 import "./summary_applies.css"
-import { buttons } from "../config/utils";
+import { buttons, formatData } from "../config/utils";
 import leftVector from "../../../images/leftVector.png"
 import { url } from "../../../config";
 import { useSummaryApplyRouter } from "../../../router/PageCreators/SummaryApplyCreator";
 
 interface Summary_appliesTypes{
     id: number;
-    number:string;
     managerName:string;
     state: string;
     date: string;
@@ -22,12 +21,18 @@ const Summary_applies = () => {
     const [applies, setApplies] = useState<Summary_appliesTypes[]>([]);
     const [allApplies, setAllApplies] = useState<Summary_appliesTypes[]>([]);
     const [apply, setApply] = useState<string | null>(null);
-    const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+    const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
     const location = useLocation();
     const navigate = useNavigate();
     const {createSummaryApplyRoute} = useSummaryApplyRouter();
-
     const [isPending, setIsPending] =useState<boolean>(false);
+
+    useEffect(() => {
+        if(!document.cookie) {
+            navigate('/auth')
+        }
+    }, [])
+
     const getTable = async() => {
         const token = document.cookie.split('=')[1]
 
@@ -86,7 +91,7 @@ const Summary_applies = () => {
 
     }, [apply, navigate]);
 
-    const toggleSelect = (number: string) => {
+    const toggleSelect = (number: number) => {
         setSelectedItems(prev => {
             const newSelectedItems = new Set(prev);
             if (newSelectedItems.has(number)) {
@@ -123,29 +128,30 @@ const Summary_applies = () => {
                     <tr key={apply.id} data-id={apply.id} onClick={handleClickToApply}>
                         <td className="left_td" onClick={(e) => {
                             e.stopPropagation(); 
-                            toggleSelect(apply.number);
+                            toggleSelect(apply.id);
                         }}>
-                            <div className={`circle ${selectedItems.has(apply.number) ? 'active' : ''}`}>
+                            <div className={`circle ${selectedItems.has(apply.id) ? 'active' : ''}`}>
                                 <div className="checkmark">✔</div>
                             </div>
                                 <div className="number">
-                                    {apply.number}
+                                    {apply.id}
                                 </div>
                         </td>
-                        <td className="left_td">
+                        <td className="left_td someleft">
                             {apply.managerName}
                         </td>
-                        <td className="td">
-                            <div className="status">
+                        <td className="left_td someleft">
+                            <div className="">
                                 {apply.state === "NEW" && "Новая"}
                                 {apply.state === "CLOSED" && "В работе"}
                                 {apply.state === "ARCHIVED" && "В архиве"}
                                 {apply.state !== "NEW" && apply.state !== "IN_PROGRESS" && apply.state !== "ARCHIVED" && "Неизвестный статус"}
                             </div>
-                            <img className="leftVector" src={leftVector} alt="Подробнее" />
+                            
                         </td>
                         <td className="left_td last_t">
-                            {apply.date}
+                            {formatData(apply.date)}
+                            <img className="leftVector2" src={leftVector} alt="Подробнее" />
                         </td>
                     </tr>
                 ))}
@@ -178,12 +184,14 @@ const Summary_applies = () => {
                     <thead>
                         <tr>
                             <th className="th">Номер заявки</th>
-                            <th className="left_th" >Логист</th>
-                            <th className="th " >Статус</th>
-                            <th className="left_th last_t" >Дата</th>
+                            <th className="left_thleft" >Логист</th>
+                            <th className="left_thleft " >Статус</th>
+                            <th className="left_thleft left_thleft" >Дата</th>
                         </tr>
                     </thead>
-                        {getApplies({ applies })}
+                        {!isPending ? getApplies({ applies }): (<div>
+                            <div style={{display:"flex", justifyContent:"center",alignContent:"center",textAlign:"center", fontSize:"32px", marginLeft:"600px"}}>Загрузка...</div>
+                    </div> )}
                 </table>
             </div>
         </div>

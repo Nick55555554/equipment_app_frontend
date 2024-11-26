@@ -12,7 +12,7 @@
 .name{
     display: block;
     font-weight: 600;
-    font-size: 22px;
+    font-size: 26px;
 }
 .status{
     display: block;
@@ -39,4 +39,8 @@
     flex-direction: column;
     position: relative;
     margin: 100px 0 0 0;
+}
+.swal-button--confirm{
+    background-color: rgb(160, 170, 147);
+    border: none;
 }

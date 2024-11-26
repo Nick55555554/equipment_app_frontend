@@ -1,4 +1,4 @@
-.apply{
+.summoryapply{
     display: grid;
     max-width: 99%;
     grid-template-rows: 14vh 4vh 1fr; 
@@ -15,12 +15,11 @@
 .info{
     grid-area: info;
 }
-.box{
-    grid-area: table;
-    background-color: white;
+.boxnotWhite{
+    grid-area: table;;
     border-radius: 2%;
     min-height: 100vh;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    height: auto;
 }
 .heighWeight{
     font-size: 24px;
@@ -61,13 +60,14 @@
     cursor: pointer;
 }
 
-.button_apply_send{
+.button_apply_send-Summory{
     display: flex;
     text-align: center;
     justify-content: center;
     align-items: center;
     margin-left: 5%;
     margin-top: 20px;;
+    margin-bottom: 2%;
     width: 90%;
     height: 60px;
     border-radius: 8px;
@@ -76,7 +76,10 @@
     background-color: #364042;
     color:white;
 }
-.button_apply_send:hover{
+.applyToDraw{
+    margin-bottom: 30px;
+}
+.button_apply_send-Summory:hover{
     background-color: white;
     color:black;
     cursor: pointer;

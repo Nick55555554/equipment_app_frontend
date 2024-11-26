@@ -3,6 +3,7 @@ import musor from "../../../../images/mysor.svg";
 import Input from "../../../../components/UI/input";
 import { v4 as uuidv4 } from 'uuid';
 import { url } from "../../../../config";
+import { convertArrivalTime, formatData, formatDataDate } from "../../config/utils";
 
 interface EquipmentTypeResponse {
     id: number;
@@ -24,21 +25,32 @@ interface GetEquipmentType {
     equipmentTypeId: number;
     equipmentType: string;
     licensePlateNumber: string | null;
-    arrivalTime: string;
+    arrivalTime: number[];
     workDuration: string;
     selfId?: string;
 }
 
-interface EquipmentType{
+
+
+interface Equipment {
     id: number;
     name: string;
     image: string;
 }
 
-interface EquipmentTypeResponsesTypes {
+interface EquipmentType {
     id: number;
     type: string;
-    equipment: EquipmentType;
+    equipment: Equipment;
+}
+
+interface RequestedEquipment {
+    id: number;
+    arrivalTime: number[]; // Массив с датой и временем
+    equipment: Equipment;
+    equipmentType: EquipmentType;
+    licensePlateNumber: string | null;
+    workDuration: number;
 }
 
 interface GetApplyType {
@@ -51,20 +63,15 @@ interface GetApplyType {
     date?: string;
     progress?: number;
     total?: number;
-    equipmentType?: EquipmentTypeResponsesTypes;
+    requestedEquipment?: RequestedEquipment[];
 }
 
 const ApplyToDraw: React.FC<GetApplyType> = ({
-    id,
-    state,
     workerName,
-    unitAddress,
     workplaceAddress,
     distance,
     date,
-    progress,
-    total,
-    equipmentType
+    requestedEquipment
 }) => {
     const button = useRef<HTMLButtonElement | null>(null);
     const [technic, setTechnic] = useState<Technic[]>([]);
@@ -116,7 +123,13 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
             equipmentTypeId: 0,
             equipmentType: "",
             licensePlateNumber: null,
-            arrivalTime: "9:00",
+            arrivalTime: [2011,
+                        12,
+                        3,
+                        18,
+                        15,
+                        30,
+                        123457000],
             workDuration: "1:00",
             selfId: uuidv4(),
         };
@@ -127,13 +140,35 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
         setSelectedTechnics(prev => [...prev, equipmentType]);
         setShowTechnic(false);
     };
+    const convertSummaryToGetEquipmentType = (technic: RequestedEquipment): GetEquipmentType => {
+        return {
+            id: technic.id,
+            equipmentId: technic.id,
+            equipmentName:  technic.equipmentType.equipment.name,
+            equipmentImage: technic.equipmentType.equipment.image,
+            equipmentTypeId: technic.equipmentType.id,
+            equipmentType: technic.equipmentType.type,
+            licensePlateNumber: technic.licensePlateNumber,
+            arrivalTime: technic.arrivalTime,
+            workDuration: "1:00",
+            selfId: uuidv4(),
+        };
+    };
+    
+    const addTechnicFromSummary = (technicToAdd: RequestedEquipment) => {
+        console.log(typeof convertArrivalTime(technicToAdd.arrivalTime))
+        const equipmentType = convertSummaryToGetEquipmentType(technicToAdd);
+        setSelectedTechnics(prev => [...prev, equipmentType]);
+        setShowTechnic(false);
+    };
 
     useEffect(() => {
-        if (equipmentType) {
-            // Если equipmentType - это объект, то можно добавить его в selectedTechnics
-            // setSelectedTechnics(prev => [...prev, convertToGetEquipmentType(equipmentType)]);
-        }
-    }, [equipmentType]);
+        if(requestedEquipment){
+            requestedEquipment.forEach(element => {
+                addTechnicFromSummary(element)
+            })
+        }        
+    }, []);
 
     return (
         <div className="applyToDraw">
@@ -141,7 +176,7 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
                 <div className="heighWeight">ФИО мастера:<span className="lowWeight">{workerName}</span></div>
                 <div className="heighWeight">Адрес объекта:<span className="lowWeight">{workplaceAddress}</span></div>
                 <div className="heighWeight">Расстояние до объекта:<span className="lowWeight">{distance}</span></div>
-                <div className="heighWeight">Дата подачи на объект:<span className="lowWeight">{date}</span></div>
+                <div className="heighWeight">Дата подачи на объект:<span className="lowWeight">{formatDataDate(date)}</span></div>
                 <div className="heighWeight">Техника 
                     <button ref={button} onClick={handleClicker} className="button_apply">
                         {isPending ? 'Загрузка...' : 'Добавить технику'}
@@ -186,7 +221,7 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
                                     </form>
                                 </div>
                                 <div className="big"> Время подачи
-                                    <div className="time_send">{one.arrivalTime}</div>
+                                    <div className="time_send">{convertArrivalTime(one.arrivalTime)}</div>
                                 </div>
                                 <div className="big"> Время работы
                                     <div className="time_work">{one.workDuration}</div>
@@ -194,8 +229,8 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
                             </div>
                         </div>
                     ))}
+                <button className="button_apply_send-Summory">Отправить</button>
                 </div>
-                <button className="button_apply_send">Отправить</button>
             </div>
 
             {showTechnic && (

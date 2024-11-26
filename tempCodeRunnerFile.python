@@ -1,7 +1,79 @@
-def Hanoi(n,start,finish):
-    if n == 0: return None
-    procedure = 6 - start - finish
-    Hanoi(n-1,start, procedure)
-    print(f"{start} -> {finish}")
-    Hanoi(n-1, procedure,finish)
-Hanoi(4,1,2)
+import json
+
+with open('C:/Users/Nick/Desktop/toParse.json', 'r', encoding='utf-8') as file:
+    mas = json.load(file)
+
+class Parser:
+    def __init__(self, toParse):
+        self.toParse = toParse
+        self.hash_table = self.Hashe_table()
+        self.hash_table.hashiryem(self.toParse)
+        return None
+    
+    def Parsed(self):
+        return self.hash_table.get_all()
+    
+    def get(self, key):
+        translated = ""
+        for j in key:
+            translated += str(ord(j)) + '/'   
+        for i in range(len(self.hash_table.table)):
+            if self.hash_table.table[i]:
+                if self.hash_table.table[i][1] == translated:
+                    to_iterate = self.hash_table.table[i][1].split('/')
+                    to_iterate.pop(-1)
+                    translated = ""
+                    for j in to_iterate:
+                        translated += chr(int(j))
+                    return self.hash_table.table[i][0]
+
+    class Hashe_table:
+        def __init__(self):
+            self.table = [[] for _ in range(10**10)] 
+        
+        def hashiryem(self,keyvalue):
+            for key, value  in keyvalue.items():
+                suma = ""
+                for i in key:
+                    suma = suma + f'{ord(i)}/'
+                res, case_of_sums = self.for_get(suma)
+
+                
+                if self.table[res] == []:
+                    self.table[res] = [value, case_of_sums]
+                else:
+                    self.table[res] += [value,case_of_sums]
+            
+                    
+                    
+        def for_get(self, suma):
+            to_get = suma
+            case_of_sums = suma.split('/')
+            case_of_sums.pop(-1)
+            int_case_of_sums = []
+            for i in case_of_sums:
+                int_case_of_sums.append(int(i))
+            suma = sum(int_case_of_sums) % len(self.table)
+            
+            return suma, to_get
+            
+            
+        def get_all(self):
+            res = []
+            for i in range(len(self.table)):
+                if self.table[i] != []:
+                    to_iterate = self.table[i][1].split('/')
+                    to_iterate.pop(-1)
+                    translated = ""
+                    for j in to_iterate:
+                        translated += chr(int(j))
+                    res.append([[translated],[self.table[i][0]]])
+            return res
+        
+
+    
+\
+P = Parser(mas)
+ok = P.Parsed()
+print(ok)
+print(P.get('ai'))

@@ -1,6 +1,6 @@
 import Header from "../../../../components/Ordinary/header/index"
 import LeftPanel from "../../../../components/Ordinary/leftPanel/index"
-import React, { useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { buttons } from "../../config/utils"
 import './summary_apply.css'
 import musor from "../../../../images/mysor.svg"
@@ -10,110 +10,119 @@ import { unitType } from "../../markedTechnic/markedOne/MarkedOne"
 import { markedTechnicTypes } from "../../markedTechnic/MarkedTechnic"
 import ApplyToDraw from "./ApplyToDraw"
 
-interface equipmentType{
+interface Equipment {
     id: number;
     name: string;
     image: string;
 }
 
-interface equipmentTypeResponsesTypes{
+interface EquipmentType {
     id: number;
     type: string;
-    equipment: equipmentType;
+    equipment: Equipment;
 }
-interface EquipmentTypeResponse {
+
+interface RequestedEquipment {
     id: number;
-    type: string;
+    arrivalTime: number[]; // Массив с датой и временем
+    equipment: Equipment;
+    equipmentType: EquipmentType;
+    licensePlateNumber: string | null;
+    workDuration: number;
 }
-interface managerType{
-    id: number; 
+
+interface Creator {
+    id: number;
     username: string;
-    role: string;
     email: string;
-    unit :unitType
+    role: string;
 }
 
-interface workplaceType{
-    id: number,
-    state: any,
-    address: string,
-    latitude: number,
-    longitude: number,
+interface Workplace {
+    id: number;
+    state: any;
+    address: string;
+    latitude: number;
+    longitude: number;
 }
-interface creatorType{
-    username: string,
-}
-interface requestType{
-    id: number,
-    state: string,
-    unit: unitType,
-    workplace: workplaceType,
-    creator: creatorType,
-    equipmentType: equipmentTypeResponsesTypes
+interface Request {
+    id: number;
+    state: string;
+    unit: unitType;
+    workplace: Workplace;
+    creator: Creator;
+    requestedEquipment: RequestedEquipment[];
 }
 
-interface summaryApplyType{
+interface SummaryApply {
     id: number;
     name: string;
     image: string;
-    manager: managerType;
-    unit: unitType,
-    equipmentTypeResponses: EquipmentTypeResponse[],
-    date: string,
-    distance: number,
-    arrivalDate: number[]
-    requests: requestType[],
-    requestedEquipment: markedTechnicTypes[]
-}
-interface applyProps{
-    number: string
+    manager: {
+        id: number;
+        username: string;
+        role: string;
+        email: string;
+        unit: unitType;
+    };
+    unit: unitType;
+    equipmentTypeResponses: EquipmentType[];
+    date: string;
+    distance: number;
+    arrivalDate: number[];
+    requests: Request[];
 }
 
-const Summary_Apply:React.FC<applyProps> = ({number}) => {
+interface ApplyProps {
+    number: string;
+}
+
+const Summary_Apply:React.FC<ApplyProps> = ({number}) => {
     const button = useRef<HTMLButtonElement | null>(null);
-    const [summaryapply, setSummaryapply] = useState<summaryApplyType[]>()
+    const [summaryapply, setSummaryapply] = useState<SummaryApply | null>(null)
     const [isPending, setIsPending] =useState<boolean>(false);
     const [showTechnic, setShowTechnic] = useState<boolean>(false);;
     const settingsApplies = useRef<HTMLDivElement | null>(null);
-    const [selectedTechnics,setSelectedTechnics] = useState<summaryApplyType[]>([])
+    const [selectedTechnics,setSelectedTechnics] = useState<SummaryApply[]>([])
     const [kolvo, setKolvo] = useState<number>(1);
 
-    const [typeClickers, setTypeClickers] = useState<Record<number, boolean>>({});
-    const handleClicker = async (e: React.MouseEvent<HTMLElement>) =>  {
+    
+    useEffect(() => {
         setIsPending(true);
         const token = document.cookie.split('=')[1]
-        const requestOption: RequestInit  = {
-            method: "GET",
-            headers: {
-                "Content-type": 'application/json',
-                "ngrok-skip-browser-warning": "69420",
-                "Authorization": `Bearer ${token}`,
-                
+        const fetchData = async () => {
+            const requestOption: RequestInit  = {   
+                method: "GET",
+                headers: {
+                    "Content-type": 'application/json',
+                    "ngrok-skip-browser-warning": "69420",
+                    "Authorization": `Bearer ${token}`,
+                    
+                }
+            }
+            try {
+                const response = await fetch(`${url}/summary/${number}`, requestOption)
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                const responseData: SummaryApply = await response.json();
+                console.log(responseData)
+                setSummaryapply(responseData);
+                setIsPending(false);
+                setShowTechnic(true);
+    
+            } catch(error) {
+                console.log("Fetch error:", error);
+                setIsPending(false)
             }
         }
-        try {
-            const response = await fetch(`${url}/summory/${number}`, requestOption)
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-            }
-            const responseData: summaryApplyType[] = await response.json();
-            setSummaryapply(responseData);
-            setIsPending(false);
-            setShowTechnic(true);
-
-        } catch(error) {
-            console.log("Fetch error:", error);
-            setIsPending(false)
-        }
-}
-    const closeTechnicWindow = () => {
-        setShowTechnic(false);
-    }
+        fetchData();
+    }, [])
 
     return(
         <div
-        className="apply">
+        className="summoryapply">
             <Header onDataChange={selectedTechnics} urlToBD="/equipment/types"/>
             <LeftPanel buttons={buttons} cssChange={true}/>
             <div className="info">
@@ -121,22 +130,21 @@ const Summary_Apply:React.FC<applyProps> = ({number}) => {
                     Заявка №{number}
                 </label>
             </div>
-            <div className="box">
-            {summaryapply?.map(one => (
-                one.requests.map(request => (
-                    <ApplyToDraw 
-                        key={request.id} 
-                        id={one.id} 
-                        state={request.state} 
-                        workerName={request.creator.username}
-                        unitAddress={one.unit.address}
-                        workplaceAddress={request.workplace.address} 
-                        distance={one.distance} 
-                        date={one.date} 
-                        equipmentType={request.equipmentType} 
+            <div className="boxnotWhite">
+            {summaryapply && summaryapply.requests.map(request => (
+                <ApplyToDraw 
+                    key={request.id} 
+                    id={summaryapply.id} 
+                    state={request.state} 
+                    workerName={request.creator.username}
+                    unitAddress={summaryapply.unit.address}
+                    workplaceAddress={request.workplace.address} 
+                    distance={summaryapply.distance} 
+                    date={summaryapply.date} 
+                    requestedEquipment={request.requestedEquipment} 
                 />
+                
                     ))
-                ))
             }
             </div>
         </div>

@@ -31,7 +31,13 @@ const Applies = () => {
     const navigate = useNavigate();
     const {createApplyRoute} = useApplyRouter();
     const [pathToApply, setPathToApply] = useState<boolean>(false);
+    const [cookie, setCookie] = useState<string | null>(document.cookie);
 
+    useEffect(() => {
+        if(!cookie) {
+            navigate('/auth')
+        }
+    }, [cookie])
 
     const [isPending, setIsPending] =useState<boolean>(false);
     const getTable = async() => {
@@ -128,7 +134,7 @@ const Applies = () => {
                         case "SENT":
                             displayState = "Новая";
                             break;
-                        case "CURRENT":
+                        case "PROCESSING":
                             displayState = "Обработанна";
                             break;
                         case "FINISHED":
@@ -140,7 +146,7 @@ const Applies = () => {
     
                     return (
                         <tr key={apply.id} onClick={handleClickToApply}>
-                            <td className="left_td" onClick={(e) => {
+                            <td className="left_td1" onClick={(e) => {
                                 e.stopPropagation(); 
                                 toggleSelect(apply.id);
                             }}>
@@ -151,12 +157,12 @@ const Applies = () => {
                                     {apply.id}
                                 </div>
                             </td>
-                            <td className="left_td">
+                            <td className="left_td1">
                                 {apply.workerName}
                             </td>
-                            <td className="left_td last_t">
+                            <td className="left_td2 ">
                                 <div className="status">{displayState}</div>
-                                <img className="leftVector" src={leftVector} alt="Подробнее" />
+                                <img className="leftVectorфapplies" src={leftVector} alt="Подробнее" />
                             </td>
                         </tr>
                     );
@@ -193,10 +199,14 @@ const Applies = () => {
                         <tr>
                             <th className="left_th">Номер заявки</th>
                             <th className="left_th" >Мастер</th>
-                            <th className="left_th last_t" >Статус</th>
+                            <th className="left_th last_t1" >Статус</th>
                         </tr>
                     </thead>
-                        {getApplies({ applies })}
+                        {!isPending ? getApplies({ applies }):(<tbody>
+                        <td></td>
+                        <td style={{display:"flex", justifyContent:"center",alignContent:"center",textAlign:"center", fontSize:"32px"}}>Загрузка...</td>
+                    
+                    </tbody> )}
                 </table>
             </div>
         </div>

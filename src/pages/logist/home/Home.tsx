@@ -4,6 +4,7 @@ import LeftPanel from "../../../components/Ordinary/leftPanel";
 import { buttons } from "../config/utils";
 import "./home.css"
 import { url } from "../../../config";
+import { useNavigate } from "react-router";
 
 interface MastersTypes{
     id: number;
@@ -13,11 +14,17 @@ interface MastersTypes{
 }
 
 const Home = () => {
-    const initialMasters:MastersTypes[] = 
-    []
+    const navigate = useNavigate();
+    const initialMasters:MastersTypes[] = []
     const [masters,setMasters] = useState<MastersTypes[]>(initialMasters);
-
     const [isPending, setIsPending] =useState<boolean>(false);
+    const [cookie, setCookie] = useState<string | null>(document.cookie);
+
+    useEffect(() => {
+        if(!cookie) {
+            navigate('/auth')
+        }
+    }, [cookie])
     const getTable = async() => {
         const token = document.cookie.split('=')[1]
 
@@ -92,7 +99,11 @@ const Home = () => {
                             <th className='head'>Заявок подано</th>
                         </tr>
                     </thead>
-                    {getMasters({masters})}
+                    {!isPending ? getMasters({masters}) : (<tbody>
+                        <td></td>
+                        <td style={{display:"flex", justifyContent:"center",alignContent:"center",textAlign:"center", fontSize:"32px"}}>Загрузка...</td>
+                    
+                    </tbody> )}
                 </table>
             </div>
         </div>

@@ -65,13 +65,26 @@
     font-size: 32px;
     font-weight: 700;
 }
+.left_td{
+
+}
 .left_th{
     font-size: 28px;
     font-weight: 620;
     padding: 10px 0 10px 20px;
     text-align: start;
 }
-.left_td{
+.left_td1{
+    padding-left: 30px;
+    font-size: 20px;
+    font-weight: 500;
+    text-align: start;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    height: 55px;
+}
+.left_td2{
+    padding-left: 0px;
     font-size: 20px;
     font-weight: 500;
     text-align: start;
@@ -82,10 +95,11 @@
 tr {
     z-index: 1;
 }
-.leftVector{
-    margin-left: 330px;
+.leftVectorфapplies{
+    margin-left: 360px;
+    margin-top: 10px;
 }
-.leftVector:hover{
+.leftVectorфapplies:hover{
     cursor: pointer;
     transform: scale(1.04);
 }
@@ -93,6 +107,9 @@ tr {
     height: 0%;
     min-width: 100px;
     line-height: 45px;
+}
+.last_t1{
+    width:400px;
 }
 .circle {
     width: 22px;

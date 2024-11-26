@@ -1,7 +1,7 @@
 import Header from "../../../../components/Ordinary/header/index"
 import LeftPanel from "../../../../components/Ordinary/leftPanel/index"
 import React, {useEffect, useRef, useState } from "react"
-import { buttons, formatData } from "../../config/utils"
+import { buttons, formatData, formatDataDate, formatWorkTime } from "../../config/utils"
 import './apply.css'
 import musor from "../../../../images/mysor.svg"
 import { url } from "../../../../config"
@@ -163,6 +163,10 @@ const Apply:React.FC<applyProps> = ({number}) => {
             setSelectedTechnics(updatedEquipment);
         }
     }, [info])
+    function formatWorkTim(workDuration: string): React.ReactNode {
+        throw new Error("Function not implemented.")
+    }
+
     return(
         <div
         className="apply">
@@ -178,7 +182,7 @@ const Apply:React.FC<applyProps> = ({number}) => {
                 <div className="heighWeight">ФИО мастера:<span className="lowWeight">{info?.workerName}</span></div>
                 <div className="heighWeight">Адрес объекта:<span className="lowWeight">{info?.workplaceAddress}</span></div>
                 <div className="heighWeight">Расстояние до объекта:<span className="lowWeight">{info?.distance} км</span></div>
-                <div className="heighWeight">Дата подачи на объект:<span className="lowWeight">{formatData(info?.date)}</span></div>
+                <div className="heighWeight">Дата подачи на объект:<span className="lowWeight">{formatDataDate(info?.date)}</span></div>
                 <div className="heighWeight">Техника <button ref={button} onClick={handleClicker}
                 className="button_apply">{isPending ? 'Загрузка...' : 'Добавить технику'}</button></div>
                 <div className="settings_applies" ref={settingsApplies}>
@@ -221,7 +225,7 @@ const Apply:React.FC<applyProps> = ({number}) => {
                                     <div className="time_send">{formatData(one.arrivalTime)}</div>
                                 </div>
                                 <div className="big"> Время работы
-                                    <div className="time_work">{one?.workDuration}</div>
+                                    <div className="time_work">{(one?.workDuration)}</div>
                                 </div>
                             </div>
 

@@ -53,6 +53,14 @@ const MarkedTechnic:React.FC  = () => {
     const {createTechnicRoute} = useMarkedTechnicRouter();
     const [isPending, setIsPending] = useState<boolean>(false);
 
+    const [cookie, setCookie] = useState<string | null>(document.cookie);
+
+    useEffect(() => {
+        if(!cookie) {
+            navigate('/auth')
+        }
+    }, [cookie])
+
     useEffect(() => {
         setIsPending(true)
         const myfetch = async () => {
@@ -149,7 +157,11 @@ const MarkedTechnic:React.FC  = () => {
                             <th className="left_th" >Марка</th>
                         </tr>
                     </thead>
-                        {getTechnics({ technics })}
+                        {!isPending ? getTechnics({ technics }) : (<tbody>
+                        <td></td>
+                        <td style={{display:"flex", justifyContent:"center",alignContent:"center",textAlign:"center", fontSize:"32px"}}>Загрузка...</td>
+                    
+                    </tbody> )}
                 </table>
             </div>
         </div>

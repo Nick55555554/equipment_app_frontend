@@ -32,7 +32,11 @@ const Technics = () => {
     const {createTechnicRoute} = useTechnicRouter();
     const [isPending, setIsPending] = useState<boolean>(false);
 
-
+    useEffect(() => {
+        if(!document.cookie) {
+            navigate('/auth')
+        }
+    }, [])
     
     const handleClickToTechnic = (e: React.MouseEvent<HTMLElement>): void => {
         const clickedElement = e.target as HTMLElement;
@@ -55,7 +59,6 @@ const Technics = () => {
 
     useEffect(() => {
         setIsPending(true)
-        console.log('rfghbfcxghb')
         const myfetch = async () => {
             const token = document.cookie.split('=')[1]
             const requestOption: RequestInit  = {
@@ -148,7 +151,11 @@ const Technics = () => {
                             <th className="left_th" >Количество</th>
                         </tr>
                     </thead>
-                        {getTechnics({ technics })}
+                        {!isPending ? getTechnics({ technics }) : (<tbody>
+                        <td></td>
+                        <td style={{display:"flex", justifyContent:"center",alignContent:"center",textAlign:"center", fontSize:"32px"}}>Загрузка...</td>
+                    
+                    </tbody> )}
                 </table>
             </div>
         </div>

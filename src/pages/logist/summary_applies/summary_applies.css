@@ -28,6 +28,9 @@
     background-color: black;
     color:white;
 }
+.leftVector2{
+    margin-left: 140px;
+}
 
 .poisk_applies{
     display: flex;
@@ -65,10 +68,10 @@
     font-size: 32px;
     font-weight: 700;
 }
-.left_th{
+.left_thleft{
     font-size: 28px;
     font-weight: 620;
-    padding: 10px 0 10px 20px;
+    padding: 10px 0 10px 60px;
     text-align: start;
 }
 .th{
@@ -141,4 +144,7 @@ tr {
     padding-left: 40px;
     line-height: 20px;
     min-height: 35px;
+}
+.someleft{
+    padding-left: 350px;
 }

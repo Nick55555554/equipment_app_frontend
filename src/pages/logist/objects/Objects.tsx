@@ -4,6 +4,7 @@ import LeftPanel from "../../../components/Ordinary/leftPanel";
 import { buttons } from "../config/utils";
 import "./objects.css"
 import {url} from '../../../config'
+import { useNavigate } from "react-router";
 
 interface Workplace{
     id: number;
@@ -16,6 +17,15 @@ const Objects = () => {
     const initialMasters: Workplace[] = []
     const [objects,setObjects] = useState<Workplace[]>(initialMasters);
     const [isPending, setIsPending] =useState<boolean>(false);
+    const navigate = useNavigate();
+    const [cookie, setCookie] = useState<string | null>(document.cookie);
+
+    useEffect(() => {
+        if(!cookie) {
+            navigate('/auth')
+        }
+    }, [cookie])
+
     const getTable = async() => {
         
         const token = document.cookie.split('=')[1]

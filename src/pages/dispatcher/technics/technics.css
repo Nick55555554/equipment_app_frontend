@@ -1,4 +1,4 @@
-/* .technicsdis{
+.technicsdis{
     display: grid;
     max-width: 99%;
     grid-template-rows: 14vh 20vh 1fr; 
@@ -54,7 +54,7 @@
 }
 .table-container-technic {
     border-radius: 4%;
-    max-height: 410px; 
+    max-height: 510px; 
     overflow: hidden;
     overflow-y: scroll;
 }
@@ -123,4 +123,4 @@ tr {
     align-items: center;
     padding-left: 2px;
     color:white;
-} */
+}
