@@ -3,11 +3,9 @@ import LeftPanel from "../../../../components/Ordinary/leftPanel/index"
 import React, { useEffect, useRef, useState } from "react"
 import { buttons } from "../../config/utils"
 import './summary_apply.css'
-import musor from "../../../../images/mysor.svg"
 import { url } from "../../../../config"
-import Input from "../../../../components/UI/input"
 import { unitType } from "../../markedTechnic/markedOne/MarkedOne"
-import { markedTechnicTypes } from "../../markedTechnic/MarkedTechnic"
+import redact from "../../../../images/redact.png"
 import ApplyToDraw from "./ApplyToDraw"
 
 interface Equipment {
@@ -24,7 +22,7 @@ interface EquipmentType {
 
 interface RequestedEquipment {
     id: number;
-    arrivalTime: number[]; // Массив с датой и временем
+    arrivalTime: number[];
     equipment: Equipment;
     equipmentType: EquipmentType;
     licensePlateNumber: string | null;
@@ -75,16 +73,23 @@ interface SummaryApply {
 
 interface ApplyProps {
     number: string;
+    state: string;
+}
+interface TechnicProps {
+    id: number,
+    mark: string,
+    number: string,
+    state: number,
+    cost: number
 }
 
-const Summary_Apply:React.FC<ApplyProps> = ({number}) => {
+const Summary_Apply:React.FC<ApplyProps> = ({number, state}) => {
     const button = useRef<HTMLButtonElement | null>(null);
     const [summaryapply, setSummaryapply] = useState<SummaryApply | null>(null)
     const [isPending, setIsPending] =useState<boolean>(false);
     const [showTechnic, setShowTechnic] = useState<boolean>(false);;
-    const settingsApplies = useRef<HTMLDivElement | null>(null);
-    const [selectedTechnics,setSelectedTechnics] = useState<SummaryApply[]>([])
-    const [kolvo, setKolvo] = useState<number>(1);
+    const [optimalTechnic, setOptimalTechnic] = useState<TechnicProps[]>([])
+    const [contractorsTechnic, setContractorsTechnic] = useState<TechnicProps[]>([])
 
     
     useEffect(() => {
@@ -110,7 +115,6 @@ const Summary_Apply:React.FC<ApplyProps> = ({number}) => {
                 console.log(responseData)
                 setSummaryapply(responseData);
                 setIsPending(false);
-                setShowTechnic(true);
     
             } catch(error) {
                 console.log("Fetch error:", error);
@@ -119,16 +123,132 @@ const Summary_Apply:React.FC<ApplyProps> = ({number}) => {
         }
         fetchData();
     }, [])
+    const closeTechnicWindow = () => {
+        setShowTechnic(false);
+    }
+
+    const handleRedact = async (e: React.MouseEvent<HTMLElement>) => {
+            setIsPending(true);
+            const token = document.cookie.split('=')[1]
+            const requestOption: RequestInit  = {
+                method: "GET",
+                headers: {
+                    "Content-type": 'application/json',
+                    "ngrok-skip-browser-warning": "69420",
+                    "Authorization": `Bearer ${token}`,
+                    
+                }
+            }
+
+            try {
+                const response = await fetch(`${url}/equipment/types`, requestOption)
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                const responseData: TechnicProps[] = await response.json();
+                console.log("Response data:", responseData);
+                setOptimalTechnic(responseData);
+                setShowTechnic(true);
+    
+            } catch(error) {
+                console.log("Fetch error:", error);
+            }
+
+            const requestOptionTwo: RequestInit  = {
+                method: "GET",
+                headers: {
+                    "Content-type": 'application/json',
+                    "ngrok-skip-browser-warning": "69420",
+                    "Authorization": `Bearer ${token}`,
+                    
+                }
+            }
+
+            try {
+                const response = await fetch(`${url}/equipment/types`, requestOptionTwo)
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                const responseData: TechnicProps[] = await response.json();
+                console.log("Response data:", responseData);
+                setContractorsTechnic(responseData);
+                setIsPending(false);
+    
+            } catch(error) {
+                console.log("Fetch error:", error);
+                setIsPending(false)
+            }
+    }
+    const sendToBase = async () => {
+        if (!summaryapply) return; // Проверяем, есть ли данные для отправки
+    
+        const dataToSend = {
+            id: summaryapply.id,
+            state: summaryapply.requests[0]?.state || null, // Предполагаем, что состояние берется из первого запроса
+            unit: summaryapply.unit,
+            workplace: summaryapply.requests[0]?.workplace, // Предполагаем, что workplace берется из первого запроса
+            creator: summaryapply.requests[0]?.creator, // Предполагаем, что creator берется из первого запроса
+            requestedEquipment: summaryapply.requests.flatMap(request => 
+                request.requestedEquipment.map(equipment => ({
+                    id: equipment.id,
+                    arrivalTime: equipment.arrivalTime,
+                    equipment: {
+                        id: equipment.equipment.id,
+                        name: equipment.equipment.name,
+                        image: equipment.equipment.image,
+                    },
+                    equipmentType: {
+                        id: equipment.equipmentType.id,
+                        type: equipment.equipmentType.type,
+                        equipment: equipment.equipmentType.equipment,
+                    },
+                    licensePlateNumber: equipment.licensePlateNumber,
+                    workDuration: equipment.workDuration,
+                }))
+            ),
+        };
+    
+        const token = document.cookie.split("=")[1];
+        const requestOption: RequestInit = {
+            method: "POST",
+            headers: {
+                "Content-type": 'application/json',
+                "ngrok-skip-browser-warning": "69420",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(dataToSend), 
+        };
+    
+        try {
+            const response = await fetch(`${url}/requests/${number}/add_to_summary`, requestOption);
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+            }
+            console.log("Данные успешно отправлены");
+        } catch (error) {
+            console.log("Fetch error:", error);
+        }
+    };
 
     return(
         <div
         className="summoryapply">
-            <Header onDataChange={selectedTechnics} urlToBD="/equipment/types"/>
+            <Header onDataChange={null}/>
             <LeftPanel buttons={buttons} cssChange={true}/>
             <div className="info">
                 <label className="label">
-                    Заявка №{number}
+                    Cводная заявка №{number}
                 </label>
+                <label className="ButtonLabel">
+                    {state === "NEW" && "Открытая"}
+                    {state === "CLOSED" && "В работе"}
+                    {state === "ARCHIVED" && "В архиве"}
+                    {state !== "NEW" && state !== "IN_PROGRESS" && state !== "ARCHIVED" && "Неизвестный статус"}
+                </label>
+                {state === "NEW" && <img className="redact" src={redact} onClick={handleRedact}/>}
             </div>
             <div className="boxnotWhite">
             {summaryapply && summaryapply.requests.map(request => (
@@ -142,11 +262,86 @@ const Summary_Apply:React.FC<ApplyProps> = ({number}) => {
                     distance={summaryapply.distance} 
                     date={summaryapply.date} 
                     requestedEquipment={request.requestedEquipment} 
-                />
-                
-                    ))
+                />))
             }
+            {state === "NEW" && <button className="sendLists"  onClick={sendToBase}>Отправить сводную заявку</button>}
             </div>
+            {showTechnic && (
+    <div>
+        <div className="overlay" onClick={closeTechnicWindow}></div>
+        <div className="windowallTechnicApply">
+            <div className="flexWindowTop">
+                <div className="label" >Оптимальные варианты техники</div>
+            </div>
+            <label className="label10">Техника на базе</label>
+            <div className="UptableInWindow">
+            {isPending ? (
+                <div style={{ textAlign: "center", fontSize: "32px" }}>Загрузка...</div>
+                ) : (
+                <table className="tableInWindow">
+                    <thead>
+                        <tr>
+                            <th className="left_th">Номер</th>
+                            <th className="left_th">Марка</th>
+                            <th className="left_th">Состояние машины</th>
+                            <th className="left_th">Стоимость</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {optimalTechnic.length > 0 ? (
+                        optimalTechnic.map((technic) => (
+                            <tr key={technic.id} data-id={technic.id}>
+                                <td className="left_td">{technic.number}</td>
+                                <td className="left_td">{technic.mark}</td>
+                                <td className="left_td">{technic.state}%</td>
+                                <td className="left_td last_t">
+                                    <div className="status">{technic.cost}</div>
+                                </td>
+                            </tr>
+                        ))
+                    ) : ""}
+                    </tbody>
+            </table>
+        )}
+
+                    </div>
+                    <label className="label10">Техника подрядчика</label>
+            <div className="UptableInWindow">
+            {isPending ? (
+                <div style={{ textAlign: "center", fontSize: "32px" }}>Загрузка...</div>
+                ) : (
+                <table className="tableInWindow">
+                    <thead>
+                        <tr>
+                            <th className="left_th">Номер</th>
+                            <th className="left_th">Марка</th>
+                            <th className="left_th">Состояние машины</th>
+                            <th className="left_th">Стоимость</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {optimalTechnic.length > 0 ? (
+                        optimalTechnic.map((technic) => (
+                            <tr key={technic.id} data-id={technic.id}>
+                                <td className="left_td">{technic.number}</td>
+                                <td className="left_td">{technic.mark}</td>
+                                <td className="left_td">{technic.state}%</td>
+                                <td className="left_td last_t">
+                                    <div className="status">{technic.cost}</div>
+                                </td>
+                            </tr>
+                        ))
+                    ) : ""}
+                    </tbody>
+            </table>
+        )}
+
+                    </div>
+            </div>
+        </div>
+        )}
+        
+
         </div>
     )
 }

@@ -1,0 +1,74 @@
+.notifyes{
+    display: grid;
+    max-width: 99%;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 14vh 1fr;
+    grid-template-areas: 
+    "leftPanel nav"
+    "leftPanel data";
+    gap:20px;
+    min-height: 98vh;
+    height: auto;
+    margin: 0;
+}
+
+.dataNotify{
+    grid-area: data;
+    table-layout: fixed;
+    min-height: 100%;
+    width: 100%;
+}
+.infonotify{
+    height: auto;
+    min-height: 98%;
+    border-radius: 2%;
+}
+.divForGap{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    gap:5px;
+    background-color: white;
+    border-radius: 2%;
+    margin-top: 30px;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 20px;
+}
+.clock{
+    margin: 70px 0px 0px 30px;
+    grid-area: time;
+}
+.oneNotifyData{
+    grid-area: info;
+    flex-direction: column;
+    padding-top: 30px;
+}
+.notify{
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: 
+    "time info";
+    gap:10px;
+    height: 170px;
+    margin: 20px 0px 0 0;
+    width: 500px;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin-left: 65px;
+}
+.labelNotify{
+    font-size: 28px;
+    font-weight: 600;
+    padding-top: 15px;
+}
+.dateTime{
+    font-size: 16px;
+}
+.numberNotify{
+    font-size: 20px;
+    padding-top: 15px;
+}

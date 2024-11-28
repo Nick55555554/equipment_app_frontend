@@ -31,8 +31,9 @@ const Applies = () => {
     const navigate = useNavigate();
     const {createApplyRoute} = useApplyRouter();
     const [pathToApply, setPathToApply] = useState<boolean>(false);
-    const [cookie, setCookie] = useState<string | null>(document.cookie);
+    const [filteredApplies, setFilteredApplies] = useState<ApplyTypes[]>(initialApplies);
 
+    const [cookie, setCookie] = useState<string | null>(document.cookie);
     useEffect(() => {
         if(!cookie) {
             navigate('/auth')
@@ -62,7 +63,7 @@ const Applies = () => {
             const responseData: ApplyTypes[] = await response.json();
             console.log("Response data:", responseData);
             setApplies(responseData);
-            setAllApplies(responseData);
+            setAllApplies(responseData); 
             setIsPending(false);
         } catch(error) {
             console.log("Fetch error:", error);
@@ -106,30 +107,33 @@ const Applies = () => {
         });
     };
 
-    const handleClickNew = () => {
-        setApplies(allApplies.filter(apply => apply.state === "Новая"));
+        const handleClickNew = () => {
+        const newApplies = allApplies.filter(apply => apply.state === "SENT");
+        setApplies(newApplies);
     };
 
     const handleClickProcessed = () => {
-        setApplies(allApplies.filter(apply => apply.state === "Обработанная"));
+        const newApplies = allApplies.filter(apply => apply.state === "PROCESSING");
+        setApplies(newApplies);
     };
 
     const handleClickFinished = () => {
-        setApplies(allApplies.filter(apply => apply.state === "Завершённая"));
+        const newApplies = allApplies.filter(apply => apply.state === "FINISHED");
+        setApplies(newApplies);
     };
 
     const handleClickAll = () => {
         setApplies(allApplies);
     };
+
     
 
 
-    const getApplies = ({ applies }: { applies: ApplyTypes[] }) => {
+    const getApplies = ( applies: ApplyTypes[] ) => {
         return (
             <tbody>
                 {applies.map((apply) => {
                     let displayState;
-    
                     switch (apply.state) {
                         case "SENT":
                             displayState = "Новая";
@@ -143,7 +147,7 @@ const Applies = () => {
                         default:
                             displayState = apply.state; 
                     }
-    
+
                     return (
                         <tr key={apply.id} onClick={handleClickToApply}>
                             <td className="left_td1" onClick={(e) => {
@@ -172,15 +176,24 @@ const Applies = () => {
     };
     
 
-    useEffect(()=>{
-        getApplies({applies});
-        console.log(applies)
-    },[applies])
 
+    const [filter, setFilter] = useState<string>(''); 
+    
+    useEffect(() => {
+        const newFilteredApplies = applies.filter(apply => 
+            apply.id.toString().toLowerCase().includes(filter.toLowerCase())
+        );
+        setFilteredApplies(newFilteredApplies);
+    }, [filter, applies]);
+    
+    const handleFilterChange = (value: string) => {
+        setFilter(value);
+        console.log(value);
+    };
     return (
         <div
         className="applies">
-            <Header urlToBD="/workplaces" onDataChange={setAllApplies}/>
+            <Header  onDataChange={handleFilterChange}/>
             <LeftPanel buttons={buttons} cssChange={false}/>
             <div className="info">
                 <label className="label">
@@ -202,7 +215,7 @@ const Applies = () => {
                             <th className="left_th last_t1" >Статус</th>
                         </tr>
                     </thead>
-                        {!isPending ? getApplies({ applies }):(<tbody>
+                        {!isPending ? getApplies(filteredApplies ):(<tbody>
                         <td></td>
                         <td style={{display:"flex", justifyContent:"center",alignContent:"center",textAlign:"center", fontSize:"32px"}}>Загрузка...</td>
                     

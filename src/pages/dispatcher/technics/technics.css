@@ -1,7 +1,7 @@
 .technicsdis{
     display: grid;
     max-width: 99%;
-    grid-template-rows: 14vh 20vh 1fr; 
+    grid-template-rows: 14vh 5vh 1fr; 
     grid-template-columns: 1fr 4fr;
     grid-template-areas: 
     "leftPanel nav" 
@@ -24,22 +24,8 @@
     font-weight: 500;
     background-color: white;
 }
-.button:hover{
-    background-color: black;
-    color:white;
-}
 
-.poisk_technics{
-    display: flex;
-    background-color: white;
-    margin-top: 10px;
-    height: 60%;
-    border-radius: 10px;
-    align-items: center;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    justify-content:space-around;
-    padding-right: 2%;
-}
+
 .table{
     grid-area: table;
     background-color: white;
@@ -65,20 +51,37 @@
     font-size: 32px;
     font-weight: 700;
 }
-.left_th{
+.left_thdis{
     font-size: 28px;
     font-weight: 620;
     padding: 10px 0 10px 20px;
     text-align: start;
+    height: 60px;
 }
-.left_td{
-    font-size: 20px;
+.left_tdDis{
+    font-size: 24px;
     font-weight: 500;
     text-align: start;
-    padding: 10px 0 10px 30px;
+    padding: 10px 0 10px 50px;
     border-top: 2px solid black;
     border-bottom: 2px solid black; 
     height: 55px;
+}
+.left_tdDisSmallPadding{
+    font-size: 24px;
+    font-weight: 500;
+    text-align: start;
+    padding: 10px 0 10px 0px;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black; 
+    height: 55px;
+}
+.statusDis{
+    font-size: 24px;
+    height: 0%;
+    min-width: 100px;
+    line-height: 45px;
+
 }
 tr {
     z-index: 1;

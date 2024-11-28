@@ -25,9 +25,13 @@
     font-weight: 700;
     padding: 30px 30px;
 }
-.left_label{
+.left_labelM{
     position: absolute;
-    padding: 0px 750px 400px 0px;
+    padding: 0px 620px 400px 0px;
+    text-align: start;
+    display: flex;
+    font-size: 36px;
+    font-weight: 700;
 }
 .doughutChartmark {
     height: auto !important;
@@ -90,7 +94,9 @@
     align-items: center;
 }
 .centerIMG{
-    margin: 30% 0 0 5%;
-    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
     height: auto;
 }

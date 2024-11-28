@@ -1,0 +1,174 @@
+.roadList{
+    display: grid;
+    max-width: 98%;
+    grid-template-rows: 14vh 1fr; 
+    grid-template-columns: 1fr 4fr;
+    grid-template-areas: 
+    "leftPanel nav" 
+    "leftPanel tableroad";
+    gap: 40px;
+    min-height: 100vh; 
+    margin: 0;
+}
+.infoRoadList{
+    grid-area: tableroad;
+    
+}
+.bigAnalytishForRoadList{
+    height: 480px;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    gap:30px
+}
+.veryBigAnalytishForRoadList{
+    height: 1100px;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    gap:30px
+}
+.smallAnalytishForRoadList,.verysmallAnalytishForRoadList {
+    height: 280px;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    gap:30px
+}
+.verysmallAnalytishForRoadList{
+    height: 210px;
+    margin-top: 20px;
+}
+.heighWeightLIST{
+    font-size: 24px;
+    font-weight: 600;
+    padding-left: 2%;
+    width: 400px;
+}
+.middleWeightLIST{
+    font-size: 24px;
+    font-weight: 500;
+    display: inline-block;
+    padding-left: 2%;;
+    width: 400px;
+}
+.lowWeightLIST{
+    font-size: 22px;
+    font-weight: 500;
+    display: inline-block;
+    padding-left: 2%;;
+}
+.dannie, .dannieButton, .dannieTwo {
+    display: flex;
+    flex-direction: row;
+    padding-left: 30px;
+    align-items: start;
+    justify-content: center;
+}
+.dannieTwo{
+    gap:400px;
+}
+.dannie{
+    gap:180px
+}
+.dannieButton{
+    gap:120px
+}
+
+.bukvi{
+    font-size: 24px;
+    font-weight: 550;
+    display: inline-block;
+    width: 250px;
+}
+.bukviTwo{
+    font-size: 24px;
+    font-weight: 550;
+    display: inline-block;
+    width: 250px;
+}
+.notInputList{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 300px;
+    font-size: 24px;
+    height: 50px;
+    background-color: rgb(0,0,0,0.1);
+}
+.notInputListTwo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 500px;
+    font-size: 24px;
+    height: 50px;
+    background-color: rgb(0,0,0,0.1);
+}
+.inputList{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 300px;
+    font-size: 24px;
+    height: 50px;
+    background-color: white;
+}
+.out{
+    font-size: 26px;
+    font-weight: 550;
+    width:100%;
+    padding-left: 30px;
+}
+.inputListonlyTwo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 500px;
+    font-size: 24px;
+    height: 50px;
+    background-color: white;
+}
+.sendLists{
+    display: flex;
+    margin-top: 20px;
+    height: 60px;
+    width: 98%;
+    background-color: #1E1E1E;
+    color: white;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+.sendLists:hover{
+    cursor: pointer;
+    background-color: white;
+    color: black;
+}

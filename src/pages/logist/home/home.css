@@ -57,6 +57,7 @@
     font-size: 28px;
     font-weight: 620;
     padding: 10px 0 10px 0;
+    height: 60px;
 }
 thead{
     background-color: RGB(174, 179, 159,0.3);

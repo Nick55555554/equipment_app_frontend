@@ -1,0 +1,39 @@
+.leftVectorDis{
+    margin-left: 0px;
+    cursor:pointer;
+}
+
+.state{
+    display: block;
+    font-size: 22px;
+    width: 450px;
+    text-align: start;
+}
+.gap{
+    width:50px;
+}
+.last_t{
+    width: 200px;
+}
+.contractorthLast{
+    padding-right: 300px;
+}
+.left_td{
+    padding-left: 60px;
+}
+.left_th5{
+    width: 300px;
+    font-size: 28px;
+    font-weight: 620;
+    padding: 10px 0 10px 20px;
+    text-align: start;
+    height: 60px;
+}
+.last_tdDis{
+    text-wrap: wrap; /* Это свойство не поддерживается, используйте вместо него word-wrap или overflow-wrap */
+    overflow-wrap: break-word; /* Позволяет переносить длинные слова */
+    word-wrap: break-word; /* Для старых браузеров */
+    height: auto; /* Убедитесь, что высота может изменяться */
+    white-space: normal;
+    text-align: center;
+}

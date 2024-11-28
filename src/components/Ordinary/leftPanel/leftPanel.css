@@ -33,6 +33,7 @@
     width: 36px;
     height: 36px;
     cursor: pointer;
+    left:20px
 }
 .ul{
     display: flex;

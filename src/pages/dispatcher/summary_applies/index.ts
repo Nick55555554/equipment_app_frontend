@@ -1,1 +1,1 @@
-export {default} from "./Summary_applies"
+export {default} from "./DisSummary_applies"

@@ -6,8 +6,9 @@ import { useLocation } from "react-router";
 import "./technics.css"
 import { buttons } from "../config/utils";
 import leftVector from "../../../images/leftVector.png"
-import { useTechnicRouter } from "../../../router/PageCreators/TechnicCreator";
+
 import { url } from "../../../config";
+import { useMarkedTechnicRouter } from "../../../router/PageCreators/MarkedTechnicCreator";
 
 interface equipmentTypeResponsesTypes{
     id: number;
@@ -29,7 +30,7 @@ const Technics = () => {
     const [technic, setTechnic] = useState<string | null>(null);
     const location = useLocation();
     const navigate = useNavigate();
-    const {createTechnicRoute} = useTechnicRouter();
+    const {createTechnicRoute} = useMarkedTechnicRouter();
     const [isPending, setIsPending] = useState<boolean>(false);
 
     useEffect(() => {
@@ -39,9 +40,9 @@ const Technics = () => {
     }, [])
     
     const handleClickToTechnic = (e: React.MouseEvent<HTMLElement>): void => {
-        const clickedElement = e.target as HTMLElement;
-        const childTd = clickedElement.closest('tr');
-        const technicId = childTd?.getAttribute('data-id');
+        const clickedElement = e.currentTarget as HTMLElement;
+        const technicId = clickedElement.getAttribute('data-id');
+        console.log("Clicked technic ID:", technicId)
         if (technicId) {
             setTechnic(technicId); 
         }
@@ -51,7 +52,8 @@ const Technics = () => {
         if (technic) {
             createTechnicRoute(technic);
             localStorage.setItem(location.pathname,location.pathname)
-            navigate(`/technic${technic}`);
+            console.log('check', technic)
+            navigate(`/markedtechnic${technic}`);
         }
 
     }, [technic, navigate]);
@@ -91,7 +93,7 @@ const Technics = () => {
 
     
 
-    const getTechnics = ({technics}: {technics: TechnicTypes[]}) => {
+    const getTechnics = (technics: TechnicTypes[]) => {
         return (
             <tbody>
             {technics.map((technic) => (
@@ -108,7 +110,7 @@ const Technics = () => {
                         </td>
                         <td className="left_td last_t">
                             <div className="status">{one.count}</div>
-                            <img className="leftVector" src={leftVector} alt="Подробнее" />
+                            <img className="leftVectorT" src={leftVector} alt="Подробнее" />
                         </td>
                     </tr>
                     ))
@@ -128,14 +130,20 @@ const Technics = () => {
         );
     };
 
+    const [filter, setFilter] = useState<string>('');
 
+    const handleFilterChange = (value: string) => {
+        setFilter(value);
+    };
 
+    const filteredTechnics = filter
+        ? technics.filter(technic => technic.name.toString().toLowerCase().includes(filter.toLowerCase()))
+        : technics; 
 
-//count
     return (
         <div
         className="technics">
-            <Header urlToBD="/workplaces" onDataChange={setTechnics}/>
+            <Header  onDataChange={handleFilterChange}/>
             <LeftPanel buttons={buttons} cssChange={false}/>
             <div className="infotechnic">
                 <label className="label">
@@ -151,7 +159,7 @@ const Technics = () => {
                             <th className="left_th" >Количество</th>
                         </tr>
                     </thead>
-                        {!isPending ? getTechnics({ technics }) : (<tbody>
+                        {!isPending ? getTechnics(filteredTechnics) : (<tbody>
                         <td></td>
                         <td style={{display:"flex", justifyContent:"center",alignContent:"center",textAlign:"center", fontSize:"32px"}}>Загрузка...</td>
                     

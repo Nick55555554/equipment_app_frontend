@@ -2,7 +2,8 @@ import { useNavigate } from "react-router";
 import useAuth from "../../components/hooks/useAuth";
 import "./auth.css"
 import { url } from "../../config";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../../context/AuthProvider";
 
 const Auth:React.FC = () => {
     const [username, setUsername] = useState<string>('');
@@ -11,6 +12,7 @@ const Auth:React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
     const {setIsAuthenticated} = useAuth();
+    const {setName, setStatus} = useContext(AuthContext)
 
     const handleClick = async() => {
         setLoading(true);
@@ -34,6 +36,21 @@ const Auth:React.FC = () => {
             setIsAuthenticated(true);
             const personStatus = data.userRole;
             console.log(personStatus);
+            const reducedUsername = username.split(' ')[0] + " " +  username.split(' ')[1][0] + ". " +  username.split(' ')[2][0] + '.'
+            setName(reducedUsername)
+            let status = ''
+            switch(personStatus){
+                case "ROLE_ADMIN":
+                    status = "Администратор";
+                    break;
+                case "ROLE_UNIT_MANAGER":
+                    status = "Логист";
+                    break;
+                case "ROLE_DISPATCHER":
+                    status = "Диспетчер";
+                    break;
+            }         
+            setStatus(status)
             
             switch(personStatus){
                 case "ROLE_ADMIN":
@@ -52,7 +69,8 @@ const Auth:React.FC = () => {
             setLoading(false);
         }
     }
-    
+
+
     
 
     return (
@@ -64,11 +82,15 @@ const Auth:React.FC = () => {
                 <div className="buttons"> 
                     <input placeholder="Логин" 
                     value={username}
-                    onChange={(e) => {setUsername(e.target.value)}}
+                    onChange={(e) => {
+                        setUsername(e.target.value)
+                        }
+                    }
                     className="vvod"></input>
                     <input placeholder="Пароль"  className="vvod"
                     value={password}
-                    onChange={(e) => {setPassword(e.target.value)}}
+                    onChange={(e) => {
+                        setPassword(e.target.value)}}
                     ></input>
                     <button className="vhod" onClick={handleClick} disabled={loading}>
                     {loading ? 'Вход...' : 'Войти'}

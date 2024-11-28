@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import leftVector from "../../../images/leftVector.png"
 import { url } from "../../../config";
 import './markedTechnic.css'
-import { useMarkedTechnicRouter } from "../../../router/PageCreators/MarkedTechnicCreator"
+import { useTechnicRouter } from "../../../router/PageCreators/TechnicCreator";
 
 export interface equipmentType{
     id: number;
@@ -50,8 +50,9 @@ const MarkedTechnic:React.FC  = () => {
     const [technic, setTechnic] = useState<string | null>(null);
     const location = useLocation();
     const navigate = useNavigate();
-    const {createTechnicRoute} = useMarkedTechnicRouter();
+    const {createTechnicRoute} = useTechnicRouter();
     const [isPending, setIsPending] = useState<boolean>(false);
+    const [filter, setFilter] = useState<string>('');
 
     const [cookie, setCookie] = useState<string | null>(document.cookie);
 
@@ -106,15 +107,21 @@ const MarkedTechnic:React.FC  = () => {
         if (technic) {
             createTechnicRoute(technic);
             localStorage.setItem(location.pathname,location.pathname)
-            navigate(`/markedtechnic${technic}`);
+            navigate(`/technic${technic}`);
         }
 
     }, [technic, navigate]);
 
-    const getTechnics = ({technics}: {technics: markedTechnicTypes[]}) => {
+    const handleFilterChange = (value: string) => {
+        setFilter(value);
+    };
+    const filteredTechnics = filter
+        ? technics.filter(technic => technic.licensePlate.toLowerCase().includes(filter.toLowerCase()))
+        : technics;
+
+    const getTechnics = (technics: markedTechnicTypes[]) => {
         return (
             <tbody>
-
                 {technics.map((technic) => (
                     <tr key={technic.id} data-id={technic.id} onClick={handleClickToMarkedTechnic}>
                         <td className="left_td"  onClick={(e) => {
@@ -140,11 +147,11 @@ const MarkedTechnic:React.FC  = () => {
     return(
         <div
         className="technics">
-            <Header urlToBD="/workplaces" onDataChange={setTechnics}/>
+            <Header  onDataChange={handleFilterChange}/>
             <LeftPanel buttons={buttons} cssChange={false}/>
             <div className="infotechnic">
                 <label className="label">
-                    Техника
+                    Закреплённая техника
                 </label>
                 </div>
             <div className="table-container-technic">
@@ -157,7 +164,7 @@ const MarkedTechnic:React.FC  = () => {
                             <th className="left_th" >Марка</th>
                         </tr>
                     </thead>
-                        {!isPending ? getTechnics({ technics }) : (<tbody>
+                        {!isPending ? getTechnics( filteredTechnics) : (<tbody>
                         <td></td>
                         <td style={{display:"flex", justifyContent:"center",alignContent:"center",textAlign:"center", fontSize:"32px"}}>Загрузка...</td>
                     

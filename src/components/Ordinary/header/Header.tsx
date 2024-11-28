@@ -2,24 +2,25 @@ import Input from "../../UI/input/index"
 import "./header.css"
 import settings from "../../../images/settings.png"
 import  bell  from "../../../images/Bell.png"
-import { SetStateAction } from "react";
+import { SetStateAction, useState } from "react";
+import { useNavigate } from "react-router";
 interface inputPropsWithHeader{
-    urlToBD: string;
-    onDataChange:SetStateAction<any>;
+    onDataChange: ((value: string) => void) | null;
+    
 }
 
-const Header:React.FC<inputPropsWithHeader> = ({urlToBD, onDataChange }) => {
+const Header:React.FC<inputPropsWithHeader> = ({ onDataChange }) => {
+    const [inputValue, setInputValue] = useState<string>("");
+    const navigate = useNavigate();
+
 
     const bellClickHandler = () => {
-
-    }
-    const settingsClickHandler = () => {
-        
+        navigate('/notifyes')
     }
     return (
         <div 
         className="header">
-            <Input width={40} urlToBD={urlToBD} onDataChange= {onDataChange}/>
+            <Input width={40} onDataChange= {onDataChange}/>
             <div className="icons">
                 <img
                 className="bellIcon"
@@ -32,7 +33,6 @@ const Header:React.FC<inputPropsWithHeader> = ({urlToBD, onDataChange }) => {
                 className="settingIcon"
                 src={settings}
                 alt='Настройки'
-                onClick={settingsClickHandler}
             />
             </div>
         </div>

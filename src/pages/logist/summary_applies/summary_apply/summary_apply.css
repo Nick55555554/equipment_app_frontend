@@ -1,7 +1,7 @@
 .summoryapply{
     display: grid;
     max-width: 99%;
-    grid-template-rows: 14vh 4vh 1fr; 
+    grid-template-rows: 14vh 6vh 1fr; 
     grid-template-columns: 1fr 4fr;
     grid-template-areas: 
     "leftPanel nav" 
@@ -114,11 +114,12 @@
 .V, .technic_number{
     display: flex;
     width: 17%;
-    height: 35px;
+    height: 55px;
     border: 1px solid black;
     border-radius: 5px;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .big{
@@ -144,7 +145,7 @@
 .technic_name, .technic_image{
     font-size: 24px;
     font-weight: 600;
-    width: 23%;
+    width: 25%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -153,8 +154,9 @@
 }
 .technic_image{
     display: flex;
-    bottom:10px;
+    bottom:30px;
     position: relative;
+    scale:1.1;
 }
 .gnoiy{
     width:17%;
@@ -174,19 +176,20 @@
     left: 50%; 
     transform: translate(-50%, -50%); 
     width: 80%;
-    height: 90%;
     background-color: white;
     border-radius: 3%;
 }
 .allTechnic{
     display: flex;
+    justify-content: start;
+    align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
     height: 100%;
-    width: 100%;
-    gap: 25px;
-    padding: 0 6%;
+    gap: 20px;
     font-size: 20px;;
+    padding-left: 40px;
+    margin-bottom: 10px;
 }
 .one{
     display: flex;
@@ -194,9 +197,10 @@
     border: 1px solid black;
     border-radius: 5px;
     height: 40%;
-    width: 22%;;
+    width: 20%;;
     justify-content: center;
     align-items: center;
+    padding: 10px;
 }
 .addTechnic{
     text-align: center;
@@ -212,15 +216,16 @@
 .labelunder{
     font-weight: 600;
     padding:5px 0 0 0;
-    height: 50px;
+    height: 35px;
     text-align: center;
+    font-size: 24px;
 }
 .widnowLi{
     list-style-type: none;;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: start;
     height: 30px;
     width: 120px;
     border: 1px solid rgb(0, 0, 0, 0.5);
@@ -229,6 +234,7 @@
     border-radius: 5px;
     border-collapse: collapse;
     margin-top: 8px;
+    margin-left: 100px;
     font-size: 18px;
 }
 .ulWindow{

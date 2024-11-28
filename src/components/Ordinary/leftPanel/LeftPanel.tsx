@@ -2,9 +2,11 @@ import Li from "../../UI/li/index";
 import "./leftPanel.css"
 import logout from "../../../images/LogOut.png"
 import { liProps } from "../../UI/li/Li";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
+import { AuthContext  } from "../../../context/AuthProvider";
+import Auth from "../../../pages/auth";
 
 
 interface leftPanelProps{
@@ -15,7 +17,9 @@ interface leftPanelProps{
 
 const LeftPanel:React.FC<leftPanelProps> = ({buttons,cssChange}) => {
     const navigate = useNavigate();
-
+    const [namemy, setNamemy] = useState<string>("")
+    const [statusmy, setStatusmy] = useState<string>("")
+    const {name, status} = useContext(AuthContext);
     function deleteAllCookies() {
         const cookies = document.cookie.split("; ");
         for (let cookie of cookies) {
@@ -24,6 +28,10 @@ const LeftPanel:React.FC<leftPanelProps> = ({buttons,cssChange}) => {
             document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
         }
     }
+    useEffect(() =>{
+        setNamemy(name)
+        setStatusmy(status);
+    },[name])
 
     const handleClickOut = () => {
         Swal.fire({
@@ -53,10 +61,10 @@ const LeftPanel:React.FC<leftPanelProps> = ({buttons,cssChange}) => {
             className="data">
                 <label
                 className="name"
-                >Имя</label>
+                >{namemy}</label>
                 <label
                 className="status"
-                >Логист</label>
+                >{status}</label>
             </div>
             <img
             className="logoutIcon" 

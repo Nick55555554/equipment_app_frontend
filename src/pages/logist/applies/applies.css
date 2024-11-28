@@ -65,14 +65,12 @@
     font-size: 32px;
     font-weight: 700;
 }
-.left_td{
-
-}
 .left_th{
     font-size: 28px;
     font-weight: 620;
     padding: 10px 0 10px 20px;
     text-align: start;
+    height: 50px;
 }
 .left_td1{
     padding-left: 30px;

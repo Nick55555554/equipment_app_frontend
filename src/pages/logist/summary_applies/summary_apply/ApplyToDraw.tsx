@@ -3,7 +3,7 @@ import musor from "../../../../images/mysor.svg";
 import Input from "../../../../components/UI/input";
 import { v4 as uuidv4 } from 'uuid';
 import { url } from "../../../../config";
-import { convertArrivalTime, formatData, formatDataDate } from "../../config/utils";
+import { convertArrivalTime, formatData, formatDataDate, parseISODuration } from "../../config/utils";
 
 interface EquipmentTypeResponse {
     id: number;
@@ -17,18 +17,19 @@ interface Technic {
     equipmentTypeResponses: EquipmentTypeResponse[];
 }
 
-interface GetEquipmentType {
-    id: number;
-    equipmentId: number;
-    equipmentName: string;
-    equipmentImage: string;
-    equipmentTypeId: number;
-    equipmentType: string;
-    licensePlateNumber: string | null;
-    arrivalTime: number[];
-    workDuration: string;
-    selfId?: string;
+interface getEquipmentType{
+    "id": number,
+    "equipmentId": number;
+    "equipmentName": string;
+    "equipmentImage": string
+    "equipmentTypeId": number;
+    "equipmentType": string;
+    "licensePlateNumber": string | null;
+    "arrivalTime": string;
+    "workDuration": string;
+    "selfId"?: string;
 }
+
 
 
 
@@ -78,7 +79,7 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
     const [isPending, setIsPending] = useState<boolean>(false);
     const [showTechnic, setShowTechnic] = useState<boolean>(false);
     const settingsApplies = useRef<HTMLDivElement | null>(null);
-    const [selectedTechnics, setSelectedTechnics] = useState<GetEquipmentType[]>([]);
+    const [selectedTechnics, setSelectedTechnics] = useState<getEquipmentType[]>([]);
     const [kolvo, setKolvo] = useState<number>(1);
     const [typeClickers, setTypeClickers] = useState<Record<number, boolean>>({});
 
@@ -88,7 +89,7 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
 
     const handleClicker = async (e: React.MouseEvent<HTMLElement>) => {
         setIsPending(true);
-        const token = document.cookie.split('=')[1];
+        const token = document.cookie.split('=')[1]
         const requestOption: RequestInit = {
             method: "GET",
             headers: {
@@ -114,23 +115,17 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
         }
     };
 
-    const convertToGetEquipmentType = (technic: Technic): GetEquipmentType => {
+    const convertToGetEquipmentType = (technic: Technic): getEquipmentType => {
         return {
             id: technic.id,
-            equipmentId: technic.id,
+            equipmentId: technic.id, 
             equipmentName: technic.name,
             equipmentImage: technic.image,
             equipmentTypeId: 0,
-            equipmentType: "",
+            equipmentType: technic.equipmentTypeResponses.length > 0 ? technic.equipmentTypeResponses[0].type : "", 
             licensePlateNumber: null,
-            arrivalTime: [2011,
-                        12,
-                        3,
-                        18,
-                        15,
-                        30,
-                        123457000],
-            workDuration: "1:00",
+            arrivalTime: "2023-12-03T09:00:00Z",
+            workDuration: "PT1H30M00S",
             selfId: uuidv4(),
         };
     };
@@ -140,7 +135,7 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
         setSelectedTechnics(prev => [...prev, equipmentType]);
         setShowTechnic(false);
     };
-    const convertSummaryToGetEquipmentType = (technic: RequestedEquipment): GetEquipmentType => {
+    const convertSummaryToGetEquipmentType = (technic: RequestedEquipment): getEquipmentType => {
         return {
             id: technic.id,
             equipmentId: technic.id,
@@ -149,8 +144,8 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
             equipmentTypeId: technic.equipmentType.id,
             equipmentType: technic.equipmentType.type,
             licensePlateNumber: technic.licensePlateNumber,
-            arrivalTime: technic.arrivalTime,
-            workDuration: "1:00",
+            arrivalTime: "2023-12-03T09:00:00Z",
+            workDuration: "PT1H30M00S",
             selfId: uuidv4(),
         };
     };
@@ -221,24 +216,26 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
                                     </form>
                                 </div>
                                 <div className="big"> Время подачи
-                                    <div className="time_send">{convertArrivalTime(one.arrivalTime)}</div>
+                                    <div className="time_send">{formatData(one.arrivalTime)}</div>
                                 </div>
                                 <div className="big"> Время работы
-                                    <div className="time_work">{one.workDuration}</div>
+                                    <div className="time_work">{parseISODuration(one?.workDuration)}</div>
                                 </div>
                             </div>
                         </div>
+
                     ))}
-                <button className="button_apply_send-Summory">Отправить</button>
                 </div>
+                <div style={{height:"20px"}}> </div>
             </div>
+        
 
             {showTechnic && (
                 <>
                     <div className="overlay" onClick={closeTechnicWindow}></div>
                     <div className="windowallTechnic">
                         <div className="bigInpit">Техника
-                            <Input width={100} urlToBD="/equipment/types" onDataChange={setTechnic} />
+                            <Input width={100} onDataChange={null} />
                         </div>
                         <div className="allTechnic">
                             {technic.map((one) => (

@@ -62,7 +62,7 @@ const Objects = () => {
     },[])
 
 
-    const getObjects = ({objects} : {objects: Workplace[] }) => {
+    const getObjects = (objects: Workplace[]) => {
         return(
             <tbody>
                 {objects.map((object) => (
@@ -81,10 +81,21 @@ const Objects = () => {
             </tbody>
         )
     }
+    const [filter, setFilter] = useState<string>('');
+
+    const handleFilterChange = (value: string) => {
+        setFilter(value);
+    };
+
+    const filteredObjects = filter
+        ? objects.filter(objects => objects.address.toLowerCase().includes(filter.toLowerCase()))
+        : objects; 
+
+
     return (
         <div
         className="object">
-            <Header urlToBD="workplaces" onDataChange={setObjects}/>
+            <Header onDataChange={handleFilterChange}/>
             <LeftPanel buttons={buttons} cssChange={false}/>
             <div className="info">
                 <label className="label">
@@ -96,7 +107,7 @@ const Objects = () => {
             className="table">
                     <thead>
                         <tr>
-                            <th className="head fio">Адрес объекта</th>
+                            <th className="head fio">Адрес</th>
                             <th className='head'>Заявок подано</th>
                             <th className='head'>Заявок принято</th>
                         </tr>
@@ -107,7 +118,7 @@ const Objects = () => {
                         <td style={{display:"flex", justifyContent:"center",alignContent:"center",textAlign:"center", fontSize:"32px"}}>Загрузка...</td>
                     
                     </tbody> ): null}
-                    {getObjects({objects})}                       
+                    {getObjects(filteredObjects)}                       
                 </table>
             </div>
         </div>

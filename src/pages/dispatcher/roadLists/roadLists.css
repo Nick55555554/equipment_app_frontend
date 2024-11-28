@@ -1,0 +1,38 @@
+.roadLists{
+    display: grid;
+    max-width: 99%;
+    grid-template-rows: 14vh 5vh 1fr; 
+    grid-template-columns: 1fr 4fr;
+    grid-template-areas: 
+    "leftPanel nav" 
+    "leftPanel info1"
+    "leftPanel table";
+    gap: 20px;
+    min-height: 100vh; 
+    margin: 0;
+}
+
+.leftVector{
+    margin-left: 200px;
+}
+.last_t{
+    width: 200px;
+}
+.left_td{
+    padding-left: 60px;
+}
+
+.buttonDis{
+    height: 50%;
+    width: 35%;
+    border-radius: 5px;
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: 500;
+    background-color: white;
+}
+.buttonDis:hover{
+    cursor: pointer;
+    background-color: black;
+    color:white;
+}

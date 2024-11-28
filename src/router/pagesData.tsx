@@ -7,10 +7,16 @@ import Technics from "../pages/logist/technics"
 import Notifyes from "../pages/notifyes";
 import Summary_applies from "../pages/logist/summary_applies";
 import Divisions from "../pages/dispatcher/divisions";
-import Summary_Apply from "../pages/dispatcher/summary_applies/summary_apply";
 import Contractors from "../pages/dispatcher/contractors";
 import TechnicsDis  from "../pages/dispatcher/technics/TechnicsDis";
 import MarkedTechnic from "../pages/logist/markedTechnic";
+import RoadLists from "../pages/dispatcher/roadLists/index";
+import DisSummary_applies from "../pages/dispatcher/summary_applies/index";
+import RoadList from "../pages/dispatcher/roadLists/roadList/RoadList";
+import LockedRoadList from "../pages/dispatcher/roadLists/roadList/LockedRoadList";
+import ConterLockedRoadList from "../pages/dispatcher/roadLists/roadList/ConterLockedRoadList";
+import Contractor from "../pages/dispatcher/contractors/contractor";
+import DisSummary_Apply from "../pages/dispatcher/summary_applies/summary_apply";
 
 export interface routerType{
     title:string;
@@ -23,6 +29,25 @@ const initialPagesData: routerType[] = [
         title:'Главная Страница',
         path:"/",
         element:<Home/>,
+    },
+    {
+        path:"/dry",
+        element:<DisSummary_Apply number={"3"} state="NEW"/>,
+        title:'Сводные заявки'
+    },
+    {
+        title:'Главная Страница',
+        path:"/LIST",
+        element:<LockedRoadList number="342"/>,
+    },
+    {
+        title:'Главная Страница',
+        path:"/CONTERLIST",
+        element:<ConterLockedRoadList number="342"/>,
+    },    {
+        title:'Главная Страница',
+        path:"/podr",
+        element:<Contractor number={"4"}/>,
     },
     {
         path:"/applies",
@@ -71,18 +96,23 @@ const initialPagesData: routerType[] = [
     },
     {
         path:"/dispatcher/summary_applies",
-        element:<Summary_applies/>,
+        element:<DisSummary_applies/>,
         title:'Сводные заявки'
     },
     {
-        path:"/dispatcher",
+        path:"/dispatcher/divisions",
         element:<Divisions/>,
         title:'Подразделения'
     },
     {
-        path:"/dispatcher/technic",
+        path:"/dispatcher/technics",
         element:<TechnicsDis/>,
         title:'Техника'
+    },
+    {
+        path:"/dispatcher",
+        element:<RoadLists/>,
+        title:'Путевые листы'
     },
 
 ]

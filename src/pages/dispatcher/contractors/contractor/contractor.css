@@ -1,0 +1,100 @@
+
+.contractor{
+    display: grid;
+    max-width: 99%;
+    grid-template-rows: 14vh 1fr; 
+    grid-template-columns: 1fr 4fr;
+    grid-template-areas: 
+    "leftPanel nav" 
+    "leftPanel tablee";
+    gap: 20px;
+    min-height: 100vh; 
+    margin: 0;
+}
+.infoContractorMark{
+    grid-area: tablee;
+}
+.label3first{
+    text-align: start;
+    display: flex;
+    font-size: 36px;
+    font-weight: 700;
+    padding-left:30px;
+}
+.label3{
+    text-align: start;
+    display: flex;
+    font-size: 36px;
+    font-weight: 700;
+    padding: 30px 30px;
+}
+.left_label{
+    position: absolute;
+    padding: 0px 750px 400px 0px;
+}
+.smallContractormark{
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    height: 210px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    margin-top: 30px;
+    gap: 25px;
+}
+.heighWeightContractor{
+    font-size: 24px;
+    font-weight: 600;
+    padding: 0 0 0 40px;
+    width: 300px;
+    display: inline-block;
+}
+.smallTableDis{
+    width: 99%;
+    border-radius: 10px;
+    height: 560px;
+    overflow: auto; 
+    border-radius: 10px;
+    border-collapse: collapse;
+}
+.lowWeightC{
+    font-size: 22px;
+    font-weight: 500;
+    display: inline-block;
+    padding-left: 2%;
+    text-wrap: nowrap;
+}
+.table_smallDis{
+    grid-area: table;
+    background-color: white;
+    border-radius: 10px;
+    margin-bottom: 1%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    height: 100%;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    overflow: auto;
+}
+.left_td_small{
+    font-size: 20px;
+    font-weight: 500;
+    text-align: start;
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    height: 55px;
+    padding-left: 20px;
+}
+.left_thSmall {
+    font-size: 28px;
+    font-weight: 620;
+    padding: 10px 0 10px 10px;
+    text-align: start;
+    height: 60px;
+}
+.left_td1{
+    padding-left: 160px;
+}

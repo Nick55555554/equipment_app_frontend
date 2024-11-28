@@ -21,6 +21,7 @@ const Summary_applies = () => {
     const [applies, setApplies] = useState<Summary_appliesTypes[]>([]);
     const [allApplies, setAllApplies] = useState<Summary_appliesTypes[]>([]);
     const [apply, setApply] = useState<string | null>(null);
+    const [state, setState] = useState<string | null>(null);
     const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
     const location = useLocation();
     const navigate = useNavigate();
@@ -62,8 +63,6 @@ const Summary_applies = () => {
         } catch(error) {
             console.log("Fetch error:", error);
             setIsPending(false)
-        } finally{
-            setIsPending(false)
         }
     }
     useEffect(() => {
@@ -76,15 +75,16 @@ const Summary_applies = () => {
         const clickedElement = e.target as HTMLElement;
         const childTd = clickedElement.closest('tr');
         const dataId = childTd?.getAttribute('data-id');
-        
-        if (dataId) {
+        const stateId = childTd?.getAttribute('state-id')
+        if (dataId && stateId) {
             setApply(dataId);
+            setState(stateId)
         }
     }
     useEffect(() => {
-        if (apply) {
+        if (apply && state) {
             
-            createSummaryApplyRoute(apply);
+            createSummaryApplyRoute(apply, state);
             localStorage.setItem(location.pathname,location.pathname)
             navigate(`/summary_apply${apply}`);
         }
@@ -104,15 +104,15 @@ const Summary_applies = () => {
     };
 
     const handleClickOpen = () => {
-        setApplies(allApplies.filter(apply => apply.state === "Новая"));
+        setApplies(allApplies.filter(apply => apply.state === "NEW"));
     };
 
     const handleClickWorking = () => {
-        setApplies(allApplies.filter(apply => apply.state === "В работе"));
+        setApplies(allApplies.filter(apply => apply.state === "CLOSED"));
     };
 
     const handleClickArchiv = () => {
-        setApplies(allApplies.filter(apply => apply.state === "В архиве"));
+        setApplies(allApplies.filter(apply => apply.state === "ARCHIVED"));
     };
 
     const handleClickAll = () => {
@@ -121,11 +121,11 @@ const Summary_applies = () => {
     
 
 
-    const getApplies = ({applies}: {applies: Summary_appliesTypes[]}) => {
+    const getApplies = (applies: Summary_appliesTypes[]) => {
         return (
             <tbody>
                 {applies.map((apply) => (
-                    <tr key={apply.id} data-id={apply.id} onClick={handleClickToApply}>
+                    <tr key={apply.id} data-id={apply.id} state-id={apply.state} onClick={handleClickToApply}>
                         <td className="left_td" onClick={(e) => {
                             e.stopPropagation(); 
                             toggleSelect(apply.id);
@@ -137,19 +137,19 @@ const Summary_applies = () => {
                                     {apply.id}
                                 </div>
                         </td>
-                        <td className="left_td someleft">
+                        <td className="left_td ">
                             {apply.managerName}
                         </td>
                         <td className="left_td someleft">
                             <div className="">
-                                {apply.state === "NEW" && "Новая"}
+                                {apply.state === "NEW" && "Открытая"}
                                 {apply.state === "CLOSED" && "В работе"}
                                 {apply.state === "ARCHIVED" && "В архиве"}
                                 {apply.state !== "NEW" && apply.state !== "IN_PROGRESS" && apply.state !== "ARCHIVED" && "Неизвестный статус"}
                             </div>
                             
                         </td>
-                        <td className="left_td last_t">
+                        <td className="left_td last_t someleft">
                             {formatData(apply.date)}
                             <img className="leftVector2" src={leftVector} alt="Подробнее" />
                         </td>
@@ -160,13 +160,24 @@ const Summary_applies = () => {
     };
 
     useEffect(()=>{
-        getApplies({applies});
+        getApplies(applies);
     },[applies])
+
+    const [filter, setFilter] = useState<string>('');
+
+    const handleFilterChange = (value: string) => {
+        setFilter(value);
+    };
+
+    const filteredApplies = filter
+        ? applies.filter(apply => apply.id.toString().toLowerCase().includes(filter.toLowerCase()))
+        : applies; 
+
 
     return (
         <div
         className="summary_applies">
-            <Header urlToBD="/workplaces" onDataChange={setAllApplies}/>
+            <Header  onDataChange={handleFilterChange}/>
             <LeftPanel buttons={buttons} cssChange={false}/>
             <div className="info">
                 <label className="label">
@@ -189,7 +200,7 @@ const Summary_applies = () => {
                             <th className="left_thleft left_thleft" >Дата</th>
                         </tr>
                     </thead>
-                        {!isPending ? getApplies({ applies }): (<div>
+                        {!isPending ? getApplies( filteredApplies): (<div>
                             <div style={{display:"flex", justifyContent:"center",alignContent:"center",textAlign:"center", fontSize:"32px", marginLeft:"600px"}}>Загрузка...</div>
                     </div> )}
                 </table>

@@ -5,6 +5,8 @@ import { buttons, formatData, months } from "../../config/utils"
 import "./technic.css"
 import { Chart, ChartData, registerables } from 'chart.js';
 import { url } from "../../../../config"
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 Chart.register(...registerables);
 
@@ -58,9 +60,13 @@ const Technic:React.FC<TechnicProps> = ({number}) => {
     const canvasRef2 = useRef<HTMLCanvasElement | null>(null);
     const canvasRef3 = useRef<HTMLCanvasElement | null>(null);
     const [isPending, setIsPending] = useState<boolean>(false);
+    type ValuePiece = Date | null;
+    type Value = ValuePiece | [ValuePiece, ValuePiece];
+    const [value, onChange] = useState<Value>(new Date());
+    const [deals, setDeals] = useState<string[]>([]);
 
     const [lineChartData1, setLineChartData1] = useState<ChartData<'bar'>>({
-        labels: months,
+        labels: ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"],
         datasets: [
             {
                 label: 'Активная',
@@ -79,7 +85,7 @@ const Technic:React.FC<TechnicProps> = ({number}) => {
         ]
     });
     const [lineChartData2, setLineChartData2] = useState<ChartData<'line'>>({
-        labels: months.slice(0, 7), 
+        labels: months.slice(0, 7),
         datasets: [{
             label: 'Показатели',
             data: [65, 59, 80, 81, 56, 55, 40],
@@ -234,6 +240,36 @@ const Technic:React.FC<TechnicProps> = ({number}) => {
                     const errorText = await response.text();
                     throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
                 }
+                const responseData: string[] = await response.json();
+                console.log("Response data:", responseData);
+                setDeals(responseData);
+                setIsPending(false);
+            } catch(error) {
+                console.log("Fetch error:", error);
+                setIsPending(false)
+            }
+        }
+        dataFetch();
+    },[value])
+    
+    useEffect(() =>{
+        const dataFetch = async () => {
+            const token = document.cookie.split('=')[1]
+            const requestOption: RequestInit  = {
+                method: "GET",
+                headers: {
+                    "Content-type": 'application/json',
+                    "ngrok-skip-browser-warning": "69420",
+                    "Authorization": `Bearer ${token}`
+                    
+                }
+            }
+            try {
+                const response = await fetch(`${url}/kalendar/${value}`, requestOption)
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
                 const responseData: markedTechnicTypes = await response.json();
                 console.log("Response data:", responseData);
                 setTechnic(responseData);
@@ -244,13 +280,12 @@ const Technic:React.FC<TechnicProps> = ({number}) => {
             }
         }
         dataFetch();
-    },[number])
-        
+    })
     
     return(
         <div
         className="technicTrue">
-        <Header urlToBD="/workplaces" onDataChange={setTechnic}/>
+        <Header  onDataChange={null}/>
             <LeftPanel buttons={buttons} cssChange={true}/>
             <div className="infoTechnic">
                 <label className="label3">
@@ -271,18 +306,13 @@ const Technic:React.FC<TechnicProps> = ({number}) => {
                     <div className="smallAnalytish smallDate">
                         <label className="left_label label3 special">20.01.2024</label>
                         <ul className="analytish_Ul">
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-
+                            {
+                                deals.length > 0 && deals.map((deal) => (
+                                    <li className="analytish_Li">deal</li>
+                                ))}
                         </ul>
                     </div>
-                    <div className="kalendar">Календарь</div>
+                    <Calendar className="kalendar" onChange={onChange} value={value}/>
                 </div>
                 <label className="label3">
                     Аналитика

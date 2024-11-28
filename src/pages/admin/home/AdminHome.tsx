@@ -22,7 +22,7 @@ const AdminHome = () => {
     return (
         <div
         className="home">
-            <Header urlToBD="/" onDataChange={setValue}/>
+            <Header onDataChange={setValue}/>
             <LeftPanel buttons={buttons} cssChange={false}/>
             <div className="info">
                 <label className="label">

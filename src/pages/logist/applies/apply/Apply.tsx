@@ -1,7 +1,7 @@
 import Header from "../../../../components/Ordinary/header/index"
 import LeftPanel from "../../../../components/Ordinary/leftPanel/index"
 import React, {useEffect, useRef, useState } from "react"
-import { buttons, formatData, formatDataDate, formatWorkTime } from "../../config/utils"
+import { buttons, formatData, formatDataDate, convertArrivalTime, parseISODuration } from "../../config/utils"
 import './apply.css'
 import musor from "../../../../images/mysor.svg"
 import { url } from "../../../../config"
@@ -14,7 +14,7 @@ interface EquipmentTypeResponse {
 }
 
 
-interface technic{
+interface Technic{
     id: number;
     name: string;
     image: string;
@@ -33,7 +33,9 @@ interface getEquipmentType{
     "equipmentType": string;
     "licensePlateNumber": string | null;
     "arrivalTime": string;
+    "arrivalTimeToSend": string;
     "workDuration": string;
+    "workDurationToSend": string;
     "selfId"?: string;
 }
 
@@ -51,12 +53,13 @@ export interface getApplyType{
 }
 const Apply:React.FC<applyProps> = ({number}) => {
     const button = useRef<HTMLButtonElement | null>(null);
-    const [technic, setTechnic] = useState<technic[]>()
+    const [technic, setTechnic] = useState<Technic[]>()
     const [isPending, setIsPending] =useState<boolean>(false);
     const [showTechnic, setShowTechnic] = useState<boolean>(false);;
     const settingsApplies = useRef<HTMLDivElement | null>(null);
     const [selectedTechnics,setSelectedTechnics] = useState<getEquipmentType[] | null>([])
     const [kolvo, setKolvo] = useState<Record<number, number>>({});
+
     const updateKolvo = (id: number, delta: number) => {
         setKolvo(prev => ({
             ...prev,
@@ -85,11 +88,12 @@ const Apply:React.FC<applyProps> = ({number}) => {
                 const errorText = await response.text();
                 throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
-            const responseData: technic[] = await response.json();
+            const responseData: Technic[] = await response.json();
             console.log("Response data:", responseData);
             setTechnic(responseData);
             setIsPending(false);
             setShowTechnic(true);
+            
 
         } catch(error) {
             console.log("Fetch error:", error);
@@ -100,22 +104,24 @@ const Apply:React.FC<applyProps> = ({number}) => {
         setShowTechnic(false);
     }
 
-    const convertToGetEquipmentType = (technic: technic): getEquipmentType => {
+    const convertToGetEquipmentType = (technic:Technic): getEquipmentType => {
         return {
             id: technic.id,
             equipmentId: technic.id, 
             equipmentName: technic.name,
             equipmentImage: technic.image,
             equipmentTypeId: 0,
-            equipmentType: "",
+            equipmentType: technic.equipmentTypeResponses.length > 0 ? technic.equipmentTypeResponses[0].type : "", 
             licensePlateNumber: null,
             arrivalTime: "2023-12-03T09:00:00Z",
-            workDuration: "1:00",
+            arrivalTimeToSend: "2023-12-03T09:00:00Z",
+            workDuration: "PT1H30M00S",
+            workDurationToSend:"PT1H30M00S",
             selfId: uuidv4(),
         };
     };
     
-    const addTechnic = (technicToAdd: technic) => {
+    const addTechnic = (technicToAdd: Technic) => {
         const equipmentType = convertToGetEquipmentType(technicToAdd);
         setSelectedTechnics(prev => [...(prev || []), equipmentType]);
         setShowTechnic(false);
@@ -158,19 +164,76 @@ const Apply:React.FC<applyProps> = ({number}) => {
         if (info) {
             const updatedEquipment = info.equipment.map((prev) => ({
                 ...prev,
+                arrivalTimeToSend: prev.arrivalTime,
+                workDurationToSend: prev.workDuration,
                 selfId: uuidv4() 
             }));
             setSelectedTechnics(updatedEquipment);
         }
     }, [info])
-    function formatWorkTim(workDuration: string): React.ReactNode {
-        throw new Error("Function not implemented.")
+    const sendApply = async () => {
+        // Убедитесь, что selectedTechnics не пустой
+        if (!selectedTechnics || selectedTechnics.length === 0) {
+            console.log("Нет техники для отправки");
+            return;
+        }
+    
+        const token = document.cookie.split("=")[1];
+        setIsPending(true);
+    
+        
+        for (const equipment of selectedTechnics) {
+            const dataToSend = {
+                id: info?.id, // ID заявки
+                unitAddress: info?.unitAddress, // Адрес подразделения
+                workplaceAddress: info?.workplaceAddress, // Адрес рабочего места
+                distance: info?.distance, // Расстояние
+                date: info?.date, // Дата
+                progress: info?.progress, // Прогресс
+                total: info?.total, // Всего
+                equipment: {
+                    "equipmentName": equipment.equipmentName,
+                    equipmentId: equipment.equipmentId,
+                    equipmentTypeId: equipment.equipmentTypeId,
+                    licensePlateNumber: equipment.licensePlateNumber,
+                    arrivalTime: equipment.arrivalTimeToSend,
+                    workDuration: "PT" + equipment.workDurationToSend
+                }
+            };
+    
+            const requestOption: RequestInit = {
+                method: "POST", 
+                headers: {
+                    "Content-type": 'application/json',
+                    "ngrok-skip-browser-warning": "69420",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(dataToSend),
+            };
+    
+            try {
+                const response = await fetch(`${url}/requests/${dataToSend.equipment.equipmentId}/requestedEquipment`, requestOption);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                console.log("Данные отправлены для техники:", dataToSend);
+            } catch (error) {
+                console.log("Fetch error:", error);
+            }
+        }
+    
+        setIsPending(false);
     }
+    
+    
+    
+
 
     return(
         <div
         className="apply">
-            <Header onDataChange={selectedTechnics} urlToBD="/equipment/types"/>
+            <Header onDataChange={null}/>
             <LeftPanel buttons={buttons} cssChange={true}/>
             <div className="info">
                 <label className="label">
@@ -193,19 +256,21 @@ const Apply:React.FC<applyProps> = ({number}) => {
                             <div className="row1">
                                 <div className="technic_name">{one.equipmentName}</div>
 
-                                <div className={`V type${one.id}`} onClick={() => {
+                                <div className={`V type${one.id}`} 
+                                onClick={() => {
                                     setTypeClickers(prev => {
                                         const newState = { ...prev, [one.id]: !prev[one.id] };
                                         return newState;
                                     });
-                                }}>
+                                }}
+                                >
                                     {one.equipmentType}
                                 </div>
 
 
 
 
-                                <div className="technic_number">------</div>
+                                <div className="technic_number">{one.licensePlateNumber}</div>
                                 <div className="gnoiy">
                                     <img src={musor} style={{width:'32px', height:"32px", cursor:"pointer"}} onClick={() =>{
                                     setSelectedTechnics(prev => prev ? prev.filter(technic => technic.selfId !== one.selfId) : [])}}/>
@@ -225,16 +290,17 @@ const Apply:React.FC<applyProps> = ({number}) => {
                                     <div className="time_send">{formatData(one.arrivalTime)}</div>
                                 </div>
                                 <div className="big"> Время работы
-                                    <div className="time_work">{(one?.workDuration)}</div>
+                                    <div className="time_work">{parseISODuration(one?.workDuration)}</div>
                                 </div>
                             </div>
 
-                            {/* {typeClickers[one.id] ? (
-                            <ul className={`typeWindow${one.id} ulWindow`}>
-                                {one.equipmentTypeResponses.map((type) => (
+                            {Array.isArray(one.equipmentType)  && typeClickers[one.id] ? (
+                            <ul className={`typeWindow ulWindow`}>
+                                {one.equipmentType.map((type) => (
                                     <li key={type.id} className="widnowLi" 
                                         onClick={(e) => {
                                             const targets = document.getElementsByClassName(`type${one.id}`) as HTMLCollectionOf<HTMLElement>;
+                                            
                                             if (targets.length > 0) { 
                                                 const newType = e.target as HTMLElement
                                                 targets[0].textContent = newType.textContent  || ""; 
@@ -248,12 +314,12 @@ const Apply:React.FC<applyProps> = ({number}) => {
                                     </li>
                                 ))}
     </ul>
-) : ""} */}
+) : ""}
 
                         </div>
                         ))}
                 </div>
-                <button className="button_apply_send"> Отправить</button>
+                <button className="button_apply_send" onClick={sendApply}> Добавить в сводную заявку</button>
             </div>
             
 
@@ -262,7 +328,7 @@ const Apply:React.FC<applyProps> = ({number}) => {
                 <div className="overlay" onClick={closeTechnicWindow}></div>
                 <div className="windowallTechnic">
                 <div className="bigInpit">Техника
-                <Input width={100} urlToBD="/equipment/types" onDataChange={setTechnic}/>
+                <Input width={100}  onDataChange={null}/>
                 </div>
                 <div className="allTechnic">
                 {technic && technic.map((one) => (

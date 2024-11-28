@@ -5,6 +5,7 @@ import { buttons, months } from "../../config/utils"
 import "./markedOne.css"
 import { Chart, ChartData, registerables } from 'chart.js';
 import { url } from "../../../../config"
+import { SmallTable } from "../../technics/technic/SmallTable"
 
 Chart.register(...registerables);
 
@@ -53,7 +54,6 @@ const MarkedOne:React.FC<TechnicProps> = ({number}) => {
     const [technic, setTechnic] = useState<markedTechnicTypes | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null); 
     const canvasRef2 = useRef<HTMLCanvasElement | null>(null);
-    const canvasRef3 = useRef<HTMLCanvasElement | null>(null);
     const [isPending, setIsPending] = useState<boolean>(false);
 
     const [lineChartData2, setLineChartData2] = useState<ChartData<'line'>>({
@@ -172,7 +172,7 @@ const MarkedOne:React.FC<TechnicProps> = ({number}) => {
     return(
         <div
         className="markedtechnic">
-        <Header urlToBD="/workplaces" onDataChange={setTechnic}/>
+        <Header  onDataChange={null}/>
             <LeftPanel buttons={buttons} cssChange={true}/>
             <div className="infoTechnicMark">
 
@@ -183,16 +183,18 @@ const MarkedOne:React.FC<TechnicProps> = ({number}) => {
                         <div className="smallAnalytishMarkBig">
                             <label className="label3 ">Марки машин
                             </label>
-                            <div className="divdoughutChartmark"><canvas className="doughutChartmark" ref={canvasRef} /></div>
+                            <div className="divdoughutChartmark"><canvas className="doughutChartmark" ref={canvasRef} />
+                            </div>
                             
                         </div>
                         <div className="smallAnalytishMark">
                             <img className="centerIMG" src={`${technic?.equipmentType.equipment.image}`}></img>
                         </div>
                     </div>
+                    <SmallTable/>
                     <div className="bigAnalytish white">
-            <label className="label3 left_label">
-                    Активность за год
+            <label className=" left_labelM">
+                    Активность по виду за год
             </label>
             <canvas className="lineChart" ref={canvasRef2} />
                 </div>

@@ -5,10 +5,10 @@ import { useRouter } from "../RouterContext";
 export const useSummaryApplyRouter = () => {
     const { addRoute } = useRouter();
     
-    const createSummaryApplyRoute = (number: string) => {
+    const createSummaryApplyRoute = (number: string, state: string) => {
         const newSummaryApply = {
             path: `/summary_apply${number}`,
-            element: <Summary_Apply number={number} />,
+            element: <Summary_Apply number={number} state={state} />,
             title: 'Главная Страница'
         };
 

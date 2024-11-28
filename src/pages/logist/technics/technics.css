@@ -70,6 +70,7 @@
     font-weight: 620;
     padding: 10px 0 10px 20px;
     text-align: start;
+    height: 60px;
 }
 .left_td{
     font-size: 20px;
@@ -83,12 +84,12 @@
 tr {
     z-index: 1;
 }
-.leftVector{
-    margin-left: 330px;
+.leftVectorT{
+    margin-left: 300px;
 }
-.leftVector:hover{
+.leftVectorT:hover{
     cursor: pointer;
-    transform: scale(1.04);
+    transform: scale(1.1);
 }
 .status{
     height: 0%;

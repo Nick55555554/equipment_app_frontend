@@ -1,1 +1,1 @@
-export {default} from "./Technic"
+export {default} from "./DisTechnic"

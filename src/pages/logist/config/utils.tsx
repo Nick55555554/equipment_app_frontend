@@ -5,7 +5,6 @@ import list from "../../../images/List.png"
 import freeApplies from "../../../images/FreeApplies.png"
 import question from "../../../images/Question.png"
 import markedTechnic from '../../../images/markedTechnic.png'
-import { time } from "console"
 export const buttons = 
 [
     {text: "Мастера бригад",
@@ -87,6 +86,29 @@ export const convertArrivalTime = (arrivalTime: number[]):string =>{
 
     const dateString = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
     const timeString = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-    console.log(timeString)
+
     return timeString
 }
+
+export function parseISODuration(duration: string): string {
+    // Регулярное выражение для разбора строки
+    const regex = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/;
+    const match = duration.match(regex);
+
+    if (!match) {
+        throw new Error("Invalid duration format");
+    }
+
+    const hours = parseInt(match[1] || '0', 10);
+    const minutes = parseInt(match[2] || '0', 10);
+    const seconds = parseInt(match[3] || '0', 10);
+
+    // Форматирование в строку HH:MM:SS
+    const formattedTime = 
+        String(hours).padStart(2, '0') + ":" + 
+        String(minutes).padStart(2, '0') + ":" + 
+        String(seconds).padStart(2, '0');
+
+    return formattedTime;
+}
+
