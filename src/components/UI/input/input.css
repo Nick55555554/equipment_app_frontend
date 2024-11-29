@@ -3,7 +3,7 @@
     display: flex;
     margin-left: 2%;
     height: 55%;
-    border: 1px solid black;
+    border: 1px solid #364042;
     border-radius: 8px;
     align-items: center;
     
@@ -11,6 +11,8 @@
 
 
 .input{
+    font-family: "Montserrat", serif;
+    font-weight: 300;
     position: relative;
     display: inline-block;
     height: 86%;
@@ -19,6 +21,7 @@
     background-color: none;
     text-align: left;
     font-size: 20px;
+    margin-left: 15px
     
 }
 .input:focus {
@@ -26,7 +29,7 @@
 }
 .search{
     position: relative;
-    padding-left: 12px;
+    padding-left: 15px;
     display: inline-block;
     z-index: 5;
     align-self:center;

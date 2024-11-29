@@ -12,11 +12,11 @@ import TechnicsDis  from "../pages/dispatcher/technics/TechnicsDis";
 import MarkedTechnic from "../pages/logist/markedTechnic";
 import RoadLists from "../pages/dispatcher/roadLists/index";
 import DisSummary_applies from "../pages/dispatcher/summary_applies/index";
-import RoadList from "../pages/dispatcher/roadLists/roadList/RoadList";
-import LockedRoadList from "../pages/dispatcher/roadLists/roadList/LockedRoadList";
-import ConterLockedRoadList from "../pages/dispatcher/roadLists/roadList/ConterLockedRoadList";
-import Contractor from "../pages/dispatcher/contractors/contractor";
-import DisSummary_Apply from "../pages/dispatcher/summary_applies/summary_apply";
+import { AdRoadLists } from "../pages/admin/AdRoadLists";
+import AdObjects from "../pages/admin/objects";
+import AdTechnics from "../pages/admin/technics";
+import AdMarkedTechnic from "../pages/admin/markedTechnic";
+import HelpInfo from "../pages/HelpInfo";
 
 export interface routerType{
     title:string;
@@ -27,27 +27,34 @@ export interface routerType{
 const initialPagesData: routerType[] = [
     {
         title:'Главная Страница',
+        path:"/helpinfo",
+        element:<HelpInfo/>,
+    },
+    {
+        title:'Главная Страница',
         path:"/",
         element:<Home/>,
     },
     {
-        path:"/dry",
-        element:<DisSummary_Apply number={"3"} state="NEW"/>,
-        title:'Сводные заявки'
+        title:'Главная Страница',
+        path:"/admin/objects",
+        element:<AdObjects/>,
     },
     {
         title:'Главная Страница',
-        path:"/LIST",
-        element:<LockedRoadList number="342"/>,
+        path:"/admin/tracks",
+        element:<AdRoadLists/>,
     },
     {
         title:'Главная Страница',
-        path:"/CONTERLIST",
-        element:<ConterLockedRoadList number="342"/>,
-    },    {
+        path:"/admin/technics",
+        element:<AdMarkedTechnic/>,
+    },
+
+    {
         title:'Главная Страница',
-        path:"/podr",
-        element:<Contractor number={"4"}/>,
+        path:"/admin/markedtechnic",
+        element:<AdTechnics/>,
     },
     {
         path:"/applies",

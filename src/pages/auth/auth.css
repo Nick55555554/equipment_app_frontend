@@ -11,11 +11,14 @@
     flex-direction: column;
     width: 80%;
     height: 80%;
+    border-radius: 10px;
     justify-content: center;
     align-items: center;
     background-color: white;
 }
 .buttons{
+    font-family: "Montserrat", serif;
+    font-weight: 300;
     margin-top: -1%;
     display: flex;
     height: 400px;
@@ -25,23 +28,29 @@
     align-items: center;
 }
 .vvod{
+    font-family: "Montserrat", serif;
+    font-weight: 300;
     width: 70%;
     height: 12%;
     margin-top: 25px;
     font-size: 20px;
     border-radius: 10px;
-    border: 1px solid rgb(0,0,0,0.5);
-    padding-left: 10px
+    border: 1px solid #616652;
+    padding-left: 20px;
+    box-sizing: border-box;
 }
 .vhod{
+    font-family: "Montserrat", serif;
+    font-weight: 500;
     margin-top: 25px;
     width: 70%;
     height: 12%;
-    background-color: rgb(69, 69, 69);
+    background-color: #364042;
     color:white;
     font-size: 22px;
     border-radius: 10px;
     cursor: pointer;
+    box-sizing: border-box;
 }
 .forForgottens{
     display: flex;

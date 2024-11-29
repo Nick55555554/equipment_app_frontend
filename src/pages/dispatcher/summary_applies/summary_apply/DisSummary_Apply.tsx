@@ -88,7 +88,8 @@ interface TechnicProps {
 const DisSummary_Apply:React.FC<ApplyProps> = ({number, state}) => {
     const [summaryapply, setSummaryapply] = useState<SummaryApply | null>(null)
     const [isPending, setIsPending] =useState<boolean>(false);
-    const [showTechnic, setShowTechnic] = useState<boolean>(false);;
+    const [showTechnic, setShowTechnic] = useState<boolean>(false);
+    const [showTechnic2, setShowTechnic2] = useState<boolean>(false);
     const [optimalTechnic, setOptimalTechnic] = useState<TechnicProps[]>([])
     const [contractorsTechnic, setContractorsTechnic] = useState<TechnicProps[]>([])
     
@@ -124,6 +125,9 @@ const DisSummary_Apply:React.FC<ApplyProps> = ({number, state}) => {
         fetchData();
     }, [])
     const closeTechnicWindow = () => {
+        setShowTechnic(false);
+    }
+    const closeTechnicWindow2 = () => {
         setShowTechnic(false);
     }
 
@@ -247,9 +251,9 @@ const DisSummary_Apply:React.FC<ApplyProps> = ({number, state}) => {
                     {state === "NEW" && "Открытая"}
                     {state === "CLOSED" && "В работе"}
                     {state === "ARCHIVED" && "В архиве"}
-                    {state !== "NEW" && state !== "IN_PROGRESS" && state !== "ARCHIVED" && "Неизвестный статус"}
+
                 </label>
-                {state === "NEW" && <img className="redact" src={redact} onClick={handleRedact}/>}
+                {(state === "NEW" || state === "CLOSED") && <img className="redact" src={redact} onClick={handleRedact}/>}
             </div>
             <div className="boxnotWhite">
             {summaryapply && summaryapply.requests.map(request => (
@@ -289,7 +293,7 @@ const DisSummary_Apply:React.FC<ApplyProps> = ({number, state}) => {
                         </tr>
                     </thead>
                     <tbody>
-                    {optimalTechnic.length > 0 ? (
+                    {showTechnic ? (
                         optimalTechnic.map((technic) => (
                             <tr key={technic.id} data-id={technic.id}>
                                 <td className="left_td">{technic.number}</td>
@@ -307,37 +311,7 @@ const DisSummary_Apply:React.FC<ApplyProps> = ({number, state}) => {
 
                     </div>
                     <label className="label10">Техника подрядчика</label>
-            <div className="UptableInWindow">
-            {isPending ? (
-                <div style={{ textAlign: "center", fontSize: "32px" }}>Загрузка...</div>
-                ) : (
-                <table className="tableInWindow">
-                    <thead>
-                        <tr>
-                            <th className="left_th">Номер</th>
-                            <th className="left_th">Марка</th>
-                            <th className="left_th">Состояние машины</th>
-                            <th className="left_th">Стоимость</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {optimalTechnic.length > 0 ? (
-                        optimalTechnic.map((technic) => (
-                            <tr key={technic.id} data-id={technic.id}>
-                                <td className="left_td">{technic.number}</td>
-                                <td className="left_td">{technic.mark}</td>
-                                <td className="left_td">{technic.state}%</td>
-                                <td className="left_td last_t">
-                                    <div className="status">{technic.cost}</div>
-                                </td>
-                            </tr>
-                        ))
-                    ) : ""}
-                    </tbody>
-            </table>
-        )}
 
-                    </div>
             </div>
         </div>
         )}

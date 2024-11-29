@@ -142,8 +142,7 @@ const DisSummary_applies = () => {
                             <div className="">
                                 {apply.state === "NEW" && "Открытая"}
                                 {apply.state === "CLOSED" && "В работе"}
-                                {apply.state === "ARCHIVED" && "В архиве"}
-                                {apply.state !== "NEW" && apply.state !== "IN_PROGRESS" && apply.state !== "ARCHIVED" && "Неизвестный статус"}
+                                {apply.state === "ARCHIVED" && "В архиве"}        
                             </div>
                             
                         </td>

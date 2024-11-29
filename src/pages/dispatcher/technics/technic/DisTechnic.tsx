@@ -5,6 +5,8 @@ import { buttons, formatData, months } from "../../config/utils"
 import "./technic.css"
 import { Chart, ChartData, registerables } from 'chart.js';
 import { url } from "../../../../config"
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 Chart.register(...registerables);
 
@@ -58,6 +60,23 @@ const DisTechnic:React.FC<TechnicProps> = ({number}) => {
     const canvasRef2 = useRef<HTMLCanvasElement | null>(null);
     const canvasRef3 = useRef<HTMLCanvasElement | null>(null);
     const [isPending, setIsPending] = useState<boolean>(false);
+
+    type ValuePiece = Date | null;
+    type Value = ValuePiece | [ValuePiece, ValuePiece];
+    const [value, onChange] = useState<Value>(new Date());
+    const [deals, setDeals] = useState<string[]>([]);
+
+
+    const handleChange = (newValue: Value) => {
+        if (Array.isArray(newValue)) {
+            // Если newValue - это массив, вы можете обработать его по своему усмотрению
+            onChange(newValue);
+        } else if (newValue instanceof Date) {
+            // Если newValue - это одиночная дата
+            onChange(newValue);
+        }
+    };
+
 
     const [lineChartData1, setLineChartData1] = useState<ChartData<'bar'>>({
         labels: months,
@@ -271,19 +290,15 @@ const DisTechnic:React.FC<TechnicProps> = ({number}) => {
                     <div className="smallAnalytish smallDate">
                         <label className="left_label label3 special">20.01.2024</label>
                         <ul className="analytish_Ul">
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-                            <li className="analytish_Li">10: 00 г. Москва, Горького, 15А, стр. 8</li>
-
+                            {
+                                deals.length > 0 && deals.map((deal) => (
+                                    <li className="analytish_Li">deal</li>
+                                ))}
                         </ul>
+                        </div>
+                        <Calendar className="kalendar" onChange={handleChange} value={value instanceof Date ? value : new Date()}  />
                     </div>
-                    <div className="kalendar">Календарь</div>
-                </div>
+                    
                 <label className="label3">
                     Аналитика
                 </label>

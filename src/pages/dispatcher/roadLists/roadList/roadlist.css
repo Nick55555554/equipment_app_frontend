@@ -27,6 +27,33 @@
     border-radius: 10px;
     gap:30px
 }
+.bigAnalytishForHELP{
+    height: 480px;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    gap:30px
+}
+.very05BigAnalytishForRoadList{
+    height: 700px;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    gap:30px
+}
+
 .veryBigAnalytishForRoadList{
     height: 1100px;
     width: 100%;
@@ -63,6 +90,20 @@
     padding-left: 2%;
     width: 400px;
 }
+.heighWeightHELP{
+    font-size: 24px;
+    font-weight: 600;
+    padding-left: 2%;
+    width: 100%;
+    padding-top: 10px;
+}
+.heighWeightHELPFIRST{
+    font-size: 24px;
+    font-weight: 600;
+    padding-left: 2%;
+    width: 100%;
+    padding-top: 50px;
+}
 .middleWeightLIST{
     font-size: 24px;
     font-weight: 500;
@@ -79,7 +120,7 @@
 .dannie, .dannieButton, .dannieTwo {
     display: flex;
     flex-direction: row;
-    padding-left: 30px;
+    padding-left: 20px;
     align-items: start;
     justify-content: center;
 }
@@ -116,6 +157,17 @@
     height: 50px;
     background-color: rgb(0,0,0,0.1);
 }
+.TwonotInputList{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 500px;
+    font-size: 24px;
+    height: 50px;
+    background-color: rgb(0,0,0,0.1);
+}
 .notInputListTwo{
     display: flex;
     justify-content: center;
@@ -146,6 +198,7 @@
 }
 .inputListonlyTwo{
     display: flex;
+    padding-left: 20px;
     justify-content: center;
     align-items: center;
     border: 1px solid black;
@@ -154,6 +207,30 @@
     font-size: 24px;
     height: 50px;
     background-color: white;
+}
+.inputListonlyOne{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 800px;
+    font-size: 24px;
+    height: 50px;
+    background-color: white;
+    margin-left: 30px;
+}
+.notinputListonlyOne{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 800px;
+    font-size: 24px;
+    height: 50px;
+    background-color: rgb(0,0,0,0.1);
+    margin-left: 30px;
 }
 .sendLists{
     display: flex;
@@ -171,4 +248,9 @@
     cursor: pointer;
     background-color: white;
     color: black;
+}
+.excel{
+    display: inline-block;
+    position: absolute;
+    left: 1450px
 }

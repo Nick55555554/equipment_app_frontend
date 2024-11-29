@@ -127,60 +127,6 @@ const Summary_Apply:React.FC<ApplyProps> = ({number, state}) => {
         setShowTechnic(false);
     }
 
-    const handleRedact = async (e: React.MouseEvent<HTMLElement>) => {
-            setIsPending(true);
-            const token = document.cookie.split('=')[1]
-            const requestOption: RequestInit  = {
-                method: "GET",
-                headers: {
-                    "Content-type": 'application/json',
-                    "ngrok-skip-browser-warning": "69420",
-                    "Authorization": `Bearer ${token}`,
-                    
-                }
-            }
-
-            try {
-                const response = await fetch(`${url}/equipment/types`, requestOption)
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-                }
-                const responseData: TechnicProps[] = await response.json();
-                console.log("Response data:", responseData);
-                setOptimalTechnic(responseData);
-                setShowTechnic(true);
-    
-            } catch(error) {
-                console.log("Fetch error:", error);
-            }
-
-            const requestOptionTwo: RequestInit  = {
-                method: "GET",
-                headers: {
-                    "Content-type": 'application/json',
-                    "ngrok-skip-browser-warning": "69420",
-                    "Authorization": `Bearer ${token}`,
-                    
-                }
-            }
-
-            try {
-                const response = await fetch(`${url}/equipment/types`, requestOptionTwo)
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-                }
-                const responseData: TechnicProps[] = await response.json();
-                console.log("Response data:", responseData);
-                setContractorsTechnic(responseData);
-                setIsPending(false);
-    
-            } catch(error) {
-                console.log("Fetch error:", error);
-                setIsPending(false)
-            }
-    }
     const sendToBase = async () => {
         if (!summaryapply) return; // Проверяем, есть ли данные для отправки
     
@@ -246,9 +192,9 @@ const Summary_Apply:React.FC<ApplyProps> = ({number, state}) => {
                     {state === "NEW" && "Открытая"}
                     {state === "CLOSED" && "В работе"}
                     {state === "ARCHIVED" && "В архиве"}
-                    {state !== "NEW" && state !== "IN_PROGRESS" && state !== "ARCHIVED" && "Неизвестный статус"}
+                    {state !== "NEW" && state !== "IN_PROGRESS"}
                 </label>
-                {state === "NEW" && <img className="redact" src={redact} onClick={handleRedact}/>}
+                {state === "NEW" && <img className="redact" src={redact}/>}
             </div>
             <div className="boxnotWhite">
             {summaryapply && summaryapply.requests.map(request => (
@@ -304,38 +250,7 @@ const Summary_Apply:React.FC<ApplyProps> = ({number, state}) => {
             </table>
         )}
 
-                    </div>
-                    <label className="label10">Техника подрядчика</label>
-            <div className="UptableInWindow">
-            {isPending ? (
-                <div style={{ textAlign: "center", fontSize: "32px" }}>Загрузка...</div>
-                ) : (
-                <table className="tableInWindow">
-                    <thead>
-                        <tr>
-                            <th className="left_th">Номер</th>
-                            <th className="left_th">Марка</th>
-                            <th className="left_th">Состояние машины</th>
-                            <th className="left_th">Стоимость</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {optimalTechnic.length > 0 ? (
-                        optimalTechnic.map((technic) => (
-                            <tr key={technic.id} data-id={technic.id}>
-                                <td className="left_td">{technic.number}</td>
-                                <td className="left_td">{technic.mark}</td>
-                                <td className="left_td">{technic.state}%</td>
-                                <td className="left_td last_t">
-                                    <div className="status">{technic.cost}</div>
-                                </td>
-                            </tr>
-                        ))
-                    ) : ""}
-                    </tbody>
-            </table>
-        )}
-
+                  
                     </div>
             </div>
         </div>

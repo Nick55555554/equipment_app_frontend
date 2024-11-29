@@ -6,7 +6,6 @@ import React, { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import { AuthContext  } from "../../../context/AuthProvider";
-import Auth from "../../../pages/auth";
 
 
 interface leftPanelProps{

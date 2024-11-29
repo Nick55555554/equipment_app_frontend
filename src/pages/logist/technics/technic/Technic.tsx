@@ -240,36 +240,6 @@ const Technic:React.FC<TechnicProps> = ({number}) => {
                     const errorText = await response.text();
                     throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
                 }
-                const responseData: string[] = await response.json();
-                console.log("Response data:", responseData);
-                setDeals(responseData);
-                setIsPending(false);
-            } catch(error) {
-                console.log("Fetch error:", error);
-                setIsPending(false)
-            }
-        }
-        dataFetch();
-    },[value])
-    
-    useEffect(() =>{
-        const dataFetch = async () => {
-            const token = document.cookie.split('=')[1]
-            const requestOption: RequestInit  = {
-                method: "GET",
-                headers: {
-                    "Content-type": 'application/json',
-                    "ngrok-skip-browser-warning": "69420",
-                    "Authorization": `Bearer ${token}`
-                    
-                }
-            }
-            try {
-                const response = await fetch(`${url}/kalendar/${value}`, requestOption)
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-                }
                 const responseData: markedTechnicTypes = await response.json();
                 console.log("Response data:", responseData);
                 setTechnic(responseData);
@@ -280,7 +250,52 @@ const Technic:React.FC<TechnicProps> = ({number}) => {
             }
         }
         dataFetch();
-    })
+    },[])
+
+    const handleChange = (newValue: Value) => {
+        if (Array.isArray(newValue)) {
+            // Если newValue - это массив, вы можете обработать его по своему усмотрению
+            onChange(newValue);
+        } else if (newValue instanceof Date) {
+            // Если newValue - это одиночная дата
+            onChange(newValue);
+        }
+    };
+
+    
+    useEffect(() =>{
+
+        const date = value instanceof Date ? value : new Date();
+            const timestamp = date.getTime()/1000;
+            const dataFetch = async () => {
+            const token = document.cookie.split('=')[1]
+            console.log(timestamp)
+            const requestOption: RequestInit  = {
+                method: "GET",
+                headers: {
+                    "Content-type": 'application/json',
+                    "ngrok-skip-browser-warning": "69420",
+                    "Authorization": `Bearer ${token}`
+                    
+                }
+            }
+            try {
+                const response = await fetch(`${url}/named_equipment/${number}/calendar?timestamp=${timestamp}`, requestOption)
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                const responseData:string[] = await response.json();
+                console.log("Response data:", responseData);
+                setDeals(responseData);
+                setIsPending(false);
+            } catch(error) {
+                console.log("Fetch error:", error);
+                setIsPending(false)
+            }
+        }
+        dataFetch();
+    }, [value])
     
     return(
         <div
@@ -312,7 +327,7 @@ const Technic:React.FC<TechnicProps> = ({number}) => {
                                 ))}
                         </ul>
                     </div>
-                    <Calendar className="kalendar" onChange={onChange} value={value}/>
+                    <Calendar className="kalendar" onChange={handleChange} value={value instanceof Date ? value : new Date()}  />
                 </div>
                 <label className="label3">
                     Аналитика

@@ -1,12 +1,60 @@
 import Header from "../../../../components/Ordinary/header/index"
 import LeftPanel from "../../../../components/Ordinary/leftPanel/index"
 import React, {useEffect, useRef, useState } from "react"
-import { buttons, formatData, formatDataDate, convertArrivalTime, parseISODuration } from "../../config/utils"
+import { buttons, formatData, formatDataDate, parseISODuration } from "../../config/utils"
 import './apply.css'
 import musor from "../../../../images/mysor.svg"
 import { url } from "../../../../config"
 import Input from "../../../../components/UI/input"
 import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from "react-router"
+
+interface EquipmentImage {
+    id: number;
+    name: string;
+    image: string;
+}
+
+interface EquipmentType {
+    id: number;
+    type: string;
+    equipment: EquipmentImage;
+}
+
+interface Unit {
+    id: number;
+    address: string;
+    latitude: number;
+    longitude: number;
+}
+
+interface Base {
+    id: number;
+    unit: Unit;
+    address: string;
+    latitude: number;
+    longitude: number;
+}
+
+interface OnBaseEquipment {
+    id: number;
+    licensePlate: string;
+    carBrand: string;
+    base: Base;
+    equipmentType: EquipmentType;
+    isActive: boolean;
+    lastWorkPlaceAddress: string;
+    finishTime: string; // ISO 8601 формат
+    fuelType: string;
+    paymentHourly: number;
+    condition: number;
+}
+
+interface RequestType {
+    onBaseEquipment: OnBaseEquipment[];
+    contractorEquipment: OnBaseEquipment[]; // Можно уточнить тип, если известен
+}
+
 
 interface EquipmentTypeResponse {
     id: number;
@@ -59,6 +107,7 @@ const Apply:React.FC<applyProps> = ({number}) => {
     const settingsApplies = useRef<HTMLDivElement | null>(null);
     const [selectedTechnics,setSelectedTechnics] = useState<getEquipmentType[] | null>([])
     const [kolvo, setKolvo] = useState<Record<number, number>>({});
+    const [selectedCellId, setSelectedCellId] = useState<number | null>(null);
 
     const updateKolvo = (id: number, delta: number) => {
         setKolvo(prev => ({
@@ -69,7 +118,8 @@ const Apply:React.FC<applyProps> = ({number}) => {
 
     const [info, setInfo] = useState<getApplyType | null>(null);
     const [typeClickers, setTypeClickers] = useState<Record<number, boolean>>({});
-
+    const [showTechnic2, setShowTechnic2] = useState<boolean>(false);
+    const navigate = useNavigate()
     const handleClicker = async (e: React.MouseEvent<HTMLElement>) =>  {
         setIsPending(true);
         const token = document.cookie.split('=')[1]
@@ -100,9 +150,6 @@ const Apply:React.FC<applyProps> = ({number}) => {
             setIsPending(false)
         }
 }
-    const closeTechnicWindow = () => {
-        setShowTechnic(false);
-    }
 
     const convertToGetEquipmentType = (technic:Technic): getEquipmentType => {
         return {
@@ -110,9 +157,9 @@ const Apply:React.FC<applyProps> = ({number}) => {
             equipmentId: technic.id, 
             equipmentName: technic.name,
             equipmentImage: technic.image,
-            equipmentTypeId: 0,
+            equipmentTypeId: 1,
             equipmentType: technic.equipmentTypeResponses.length > 0 ? technic.equipmentTypeResponses[0].type : "", 
-            licensePlateNumber: null,
+            licensePlateNumber: "gf",
             arrivalTime: "2023-12-03T09:00:00Z",
             arrivalTimeToSend: "2023-12-03T09:00:00Z",
             workDuration: "PT1H30M00S",
@@ -172,7 +219,6 @@ const Apply:React.FC<applyProps> = ({number}) => {
         }
     }, [info])
     const sendApply = async () => {
-        // Убедитесь, что selectedTechnics не пустой
         if (!selectedTechnics || selectedTechnics.length === 0) {
             console.log("Нет техники для отправки");
             return;
@@ -184,25 +230,15 @@ const Apply:React.FC<applyProps> = ({number}) => {
         
         for (const equipment of selectedTechnics) {
             const dataToSend = {
-                id: info?.id, // ID заявки
-                unitAddress: info?.unitAddress, // Адрес подразделения
-                workplaceAddress: info?.workplaceAddress, // Адрес рабочего места
-                distance: info?.distance, // Расстояние
-                date: info?.date, // Дата
-                progress: info?.progress, // Прогресс
-                total: info?.total, // Всего
-                equipment: {
-                    "equipmentName": equipment.equipmentName,
-                    equipmentId: equipment.equipmentId,
-                    equipmentTypeId: equipment.equipmentTypeId,
-                    licensePlateNumber: equipment.licensePlateNumber,
-                    arrivalTime: equipment.arrivalTimeToSend,
-                    workDuration: "PT" + equipment.workDurationToSend
-                }
+                equipmentId: equipment.equipmentId,
+                equipmentTypeId: equipment.equipmentTypeId,
+                licensePlateNumber: "fdg",
+                arrivalTime: equipment.arrivalTimeToSend,
+                workDuration: equipment.workDurationToSend
             };
     
             const requestOption: RequestInit = {
-                method: "POST", 
+                method: "PUT", 
                 headers: {
                     "Content-type": 'application/json',
                     "ngrok-skip-browser-warning": "69420",
@@ -212,12 +248,13 @@ const Apply:React.FC<applyProps> = ({number}) => {
             };
     
             try {
-                const response = await fetch(`${url}/requests/${dataToSend.equipment.equipmentId}/requestedEquipment`, requestOption);
+                const response = await fetch(`${url}/requests/requestedEquipment/${number}`, requestOption);
                 if (!response.ok) {
                     const errorText = await response.text();
                     throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
                 }
                 console.log("Данные отправлены для техники:", dataToSend);
+                navigate('/applies')
             } catch (error) {
                 console.log("Fetch error:", error);
             }
@@ -225,7 +262,63 @@ const Apply:React.FC<applyProps> = ({number}) => {
     
         setIsPending(false);
     }
+    const closeTechnicWindow = () => {
+        setShowTechnic(false);
+        setShowTechnic2(false);
+    }
+
+    const handleNewLicense = (e: React.MouseEvent<HTMLElement>) => {
+        console.log(selectedCellId)
+        setShowTechnic2(false);
+        const clickedElement = e.target as HTMLElement;
+        const childTd = clickedElement.closest('tr');
+        const number = childTd?.children[1]?.textContent;
+        selectedTechnics?.map((one) => {
+            if (one.id === selectedCellId && number) {
+                one.licensePlateNumber = number;
+            }
+        })
+
+    };
     
+
+    const [optimalTechnic, setOptimalTechnic] = useState<OnBaseEquipment[]>([])
+    const [optimalTechni2, setOptimalTechnic2] = useState<OnBaseEquipment[]>([])
+
+
+    const handleTechnicNumberClick = (id: number) : void => {
+        setSelectedCellId(id);
+        const fetchData = async () => {
+            setIsPending(true);
+            const token = document.cookie.split("=")[1];
+            const requestOption: RequestInit = {
+                method: "GET",
+                headers: {
+                    "Content-type": 'application/json',
+                    "ngrok-skip-browser-warning": "69420",
+                    "Authorization": `Bearer ${token}`
+                }
+            };
+            try {
+                const response = await fetch(`${url}/named_equipment/best`, requestOption);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                const responseData: RequestType = await response.json(); 
+                console.log("Response data:", responseData);
+                setOptimalTechnic(responseData.onBaseEquipment)
+                setOptimalTechnic2(responseData.onBaseEquipment)
+                setShowTechnic2(true);
+                setIsPending(false);
+            } catch (error) {
+                console.log("Fetch error:", error);
+                setIsPending(false);
+            }
+        };
+    
+        fetchData();
+    }
     
     
 
@@ -270,7 +363,7 @@ const Apply:React.FC<applyProps> = ({number}) => {
 
 
 
-                                <div className="technic_number">{one.licensePlateNumber}</div>
+                                <div className="technic_number" onClick={()=> handleTechnicNumberClick(one.id) }>{one.licensePlateNumber}</div>
                                 <div className="gnoiy">
                                     <img src={musor} style={{width:'32px', height:"32px", cursor:"pointer"}} onClick={() =>{
                                     setSelectedTechnics(prev => prev ? prev.filter(technic => technic.selfId !== one.selfId) : [])}}/>
@@ -342,6 +435,64 @@ const Apply:React.FC<applyProps> = ({number}) => {
             </div>
         </>
         }
+        
+            {showTechnic2 ? 
+            <> 
+                <div className="overlay" onClick={closeTechnicWindow}></div>
+                <div className="UptableInWindow">
+                    <label className="label lf">Оптимальные варианты техники</label>
+                    <label className="sm lf">Техника на базе</label>
+                <table className="tableInWindow" style={{borderRadius: "10px"}}>
+                    <thead>
+                        <tr>
+                            <th className="left_th">Номер</th>
+                            <th className="left_th wp">Марка</th>
+                            <th className="left_th we">Состояние машины</th>
+                            <th className="left_th wd">Стоимость</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {optimalTechnic.length > 0 ? (
+                        optimalTechnic.map((technic) => (
+                            <tr key={technic.id} data-id={technic.id} onClick={handleNewLicense}>
+                                <td className="left_td">{technic.carBrand}</td>
+                                <td className=" leeft">{technic.licensePlate}</td>
+                                <td className="left_td">{technic.condition}%</td>
+                                <td className="left_td ">
+                                    {technic.paymentHourly}
+                                </td>
+                            </tr>
+                        ))
+                    ) : ""}
+                        </tbody>
+                </table>
+                <label className="sm lf">Техника подрядчика</label>
+                <table className="tableInWindow" style={{borderRadius: "10px"}}>
+                    <thead>
+                        <tr>
+                            <th className="left_th">Номер</th>
+                            <th className="left_th wp">Марка</th>
+                            <th className="left_th we">Состояние машины</th>
+                            <th className="left_th wd">Стоимость</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {optimalTechni2.length > 0 ? (
+                        optimalTechni2.map((technic) => (
+                            <tr key={technic.id} data-id={technic.id} onClick={handleNewLicense}>
+                                <td className="left_td">{technic.carBrand}</td>
+                                <td className=" leeft">{technic.licensePlate}</td>
+                                <td className="left_td">{technic.condition}%</td>
+                                <td className="left_td ">
+                                    {technic.paymentHourly}
+                                </td>
+                            </tr>
+                        ))
+                    ) : ""}
+                        </tbody>
+                </table>
+            </div>
+        </>  : <></>}
     </div>
 )
 }

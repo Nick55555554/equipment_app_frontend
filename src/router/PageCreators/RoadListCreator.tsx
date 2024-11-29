@@ -7,7 +7,7 @@ export const useRoadListRouter = () => {
     
     const createRoadListRoute = (number:string) => {
         const newList = {
-            path: `/roadlist${number}`,
+            path: `/dispatcher/track/${number}`,
             element: <RoadList number={number} />,
             title: 'Главная Страница'
         };

@@ -11,10 +11,10 @@ export const buttons =
     icon: <img src={workerImage} alt="Мастера бригад" style={{height:'34px', width:"34px"}}/>,url: "/"},
     {text: "Объекты",icon:<img src={object} alt="Объекты"  style={{height:'34px', width:"34px"}}/>,url: "/objects"},
     {text: "Список техники",icon:<img src={technic} alt="Техника"  style={{height:'34px', width:"36px"}}/>,url: "/technic"},
-    {text: "Закреплённая техника",icon:<img src={markedTechnic} alt="акреплённая техника"  style={{height:'34px', width:"36px"}}/>,url: "/markedtechnic"},
+    {text: "Закреплённая техника",icon:<img src={markedTechnic} alt="Закреплённая техника"  style={{height:'34px', width:"36px"}}/>,url: "/markedtechnic"},
     {text: "Заявки",icon:<img src={list} alt="Заявки"  style={{height:'36px', width:"34px"}}/>,url: "/applies"},
     {text: "Сводные заявки", icon:<img src={freeApplies} alt="вободные заявки"  style={{height:'34px', width:"34px"}}/>,url: "/summary_applies"},
-    {text: "Справочная информация",icon:<img src={question} alt="Справочная информация"  style={{height:'34px', width:"34px"}}/> , url: '/'}
+    {text: "Справочная информация",icon:<img src={question} alt="Справочная информация"  style={{height:'34px', width:"34px"}}/> , url: '/helpinfo'}
 ]
 export const months = [
     'Январь',
@@ -69,7 +69,7 @@ export const formatWorkTime = (isoDate: string | undefined) => {
 };
 export const convertArrivalTime = (arrivalTime: number[]):string =>{
     if (arrivalTime.length !== 7) {
-        throw new Error("Invalid arrivalTime array. It must contain exactly 7 elements.");
+       console.log('Convert error')
     }
 
 
@@ -111,4 +111,33 @@ export function parseISODuration(duration: string): string {
 
     return formattedTime;
 }
+export function timeToISO(time:string) {
+    const [hours, minutes] = time.split(':').map(Number);
+  
+    // Проверка на корректность значений
+    if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+      throw new Error("Некорректное значение времени. Убедитесь, что часы находятся в диапазоне 0-23, а минуты — в диапазоне 0-59.");
+    }
+  
+    // Получаем текущую дату
+    const now = new Date();
+  
+    // Устанавливаем часы и минуты
+    now.setHours(hours-17);
+    now.setMinutes(minutes);
+    now.setSeconds(0); // Устанавливаем секунды в 0
+    now.setMilliseconds(0); // Устанавливаем миллисекунды в 0
+  
+    // Преобразуем дату в строку ISO 8601
+    return now.toISOString();
+  }
+  
+  // Пример использования:
+  try {
+    const time = "8:30"; // Вводимое время
+    const isoFormat = timeToISO(time);
+    console.log(isoFormat); // Вывод: 2023-10-03T08:30:00.000Z (пример)
+  } catch (error) {
+  }
+  
 

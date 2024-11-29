@@ -28,7 +28,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     gap:5px;
     background-color: white;
     border-radius: 2%;
@@ -55,10 +55,10 @@
     gap:10px;
     height: 170px;
     margin: 20px 0px 0 0;
-    width: 500px;
+    width: 550px;
     border: 1px solid black;
     border-radius: 10px;
-    margin-left: 65px;
+    margin-left: 30px;
 }
 .labelNotify{
     font-size: 28px;

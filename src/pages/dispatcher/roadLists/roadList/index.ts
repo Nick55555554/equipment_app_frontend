@@ -1,1 +1,1 @@
-export {default} from "./RoadList";"./LockedRoadList"
+export {default} from "./RoadList"

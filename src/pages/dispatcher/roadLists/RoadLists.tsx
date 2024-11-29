@@ -7,6 +7,9 @@ import leftVector from "../../../images/leftVector.png"
 import { url } from "../../../config";
 import './roadLists.css'
 import { useMarkedTechnicRouter } from "../../../router/PageCreators/MarkedTechnicCreator"
+import { formatDataDate } from "../../logist/config/utils";
+import { useRoadListRouter } from "../../../router/PageCreators/RoadListCreator";
+import { useLockedRoadListRouter } from "../../../router/PageCreators/LockedRoadListCreator";
 
 export interface equipmentType{
     id: number;
@@ -42,27 +45,81 @@ export interface markedTechnicTypes{
     base: baseType;
     equipmentType: equipmentTypeResponsesTypes;
 }
+interface Unit {
+    id: number;
+    address: string;
+    latitude: number;
+    longitude: number;
+}
+
+interface Base {
+    id: number;
+    unit: Unit;
+    address: string;
+    latitude: number;
+    longitude: number;
+}
+
+interface Equipment {
+    id: number;
+    name: string;
+    image: string;
+}
+
+interface EquipmentType {
+    id: number;
+    type: string;
+    equipment: Equipment;
+}
+
+interface NamedEquipment {
+    id: number;
+    licensePlate: string;
+    carBrand: string;
+    base: Base;
+    fuelType: string;
+    equipmentType: EquipmentType;
+}
+
+interface ArrivalPoint {
+    id: number;
+    address: string;
+    planOutTime: string; // ISO 8601 date string
+    planArrivalTime: string; // ISO 8601 date string
+    distanse: number; // исправлено с "distanse" на "distance"
+    planWorkDuration: number; // в секундах
+}
+
+interface YourDataType {
+    id: number;
+    date: string; // ISO 8601 date string
+    namedEquipment: NamedEquipment;
+    driver: null | string; // предполагается, что driver может быть строкой или null
+    isActive: boolean;
+    arrivalPoints: ArrivalPoint[];
+}
 
 const RoadLists = () => {
 
 
-    const [technics, setTechnics] = useState<markedTechnicTypes[]>([]);
-    const [allTechnics, setAllTechnics] = useState<markedTechnicTypes[]>([]);
+    const [technics, setTechnics] = useState<YourDataType[]>([]);
+    const [allTechnics, setAllTechnics] = useState<YourDataType[]>([]);
     const [technic, setTechnic] = useState<string | null>(null);
     const location = useLocation();
     const navigate = useNavigate();
-    const {createTechnicRoute} = useMarkedTechnicRouter();
+    const {createRoadListRoute} = useRoadListRouter();
+    const {createLockedRoadListRoute} = useLockedRoadListRouter();
     const [isPending, setIsPending] = useState<boolean>(false);
     const [value, setValue] = useState<string | null>(null);
     const [cookie, setCookie] = useState<string | null>(document.cookie);
 
     const Input = document
 
-    // useEffect(() => {
-    //     if(!cookie) {
-    //         navigate('/auth')
-    //     }
-    // }, [cookie])
+    useEffect(() => {
+        if(!cookie) {
+            navigate('/auth')
+        }
+    }, [cookie])
 
     useEffect(() => {
         setIsPending(true)
@@ -78,15 +135,14 @@ const RoadLists = () => {
                 }
             }
             try {
-                const response = await fetch(`${url}/named_equipment`, requestOption)
+                const response = await fetch(`${url}/track`, requestOption)
                 if (!response.ok) {
                     const errorText = await response.text();
                     throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
                 }
-                const responseData: markedTechnicTypes[] = await response.json();
+                const responseData: YourDataType[] = await response.json();
                 console.log("Response data:", responseData);
                 setTechnics(responseData);
-                setAllTechnics(responseData);
                 setIsPending(false);
             } catch(error) {
                 console.log("Fetch error:", error);
@@ -100,39 +156,53 @@ const RoadLists = () => {
         const clickedElement = e.target as HTMLElement;
         const childTd = clickedElement.closest('tr');
         const technicId = childTd?.getAttribute('data-id');
+        const isActive = childTd?.getAttribute('data-active') === 'true'; 
         if (technicId) {
             setTechnic(technicId); 
+            if (isActive) {
+                if(technic){
+                    createRoadListRoute(technic);
+                    localStorage.setItem(location.pathname,location.pathname)
+                    navigate(`/dispatcher/track/${technic}`);
+                }
+            } else {
+                if (technic){
+                    createLockedRoadListRoute(technic);
+                    localStorage.setItem(location.pathname,location.pathname)
+                    navigate(`/dispatcher/locked/track/${technic}`);
+                }
+            }
         }
     };
 
-    useEffect(() => {
-        if (technic) {
-            createTechnicRoute(technic);
-            localStorage.setItem(location.pathname,location.pathname)
-            navigate(`/markedtechnic${technic}`);
-        }
+    // useEffect(() => {
+    //     if (technic) {
+    //         createRoadListRoute(technic);
+    //         localStorage.setItem(location.pathname,location.pathname)
+    //         navigate(`/dispatcher/track/${technic}`);
+    //     }
 
-    }, [technic, navigate]);
+    // }, [technic, navigate]);
 
-    const getTechnics = ({technics}: {technics: markedTechnicTypes[]}) => {
+    const getTechnics = ({technics}: {technics: YourDataType[]}) => {
         return (
             <tbody>
 
                 {technics.map((technic) => (
-                    <tr key={technic.id} data-id={technic.id} onClick={handleClickToMarkedTechnic}>
+                    <tr key={technic.id} data-id={technic.id} data-active={technic.isActive} onClick={handleClickToMarkedTechnic}>
                         <td className="left_td"  onClick={(e) => {
                             e.stopPropagation(); 
                         }}>
-                            {technic.licensePlate}
+                            {technic.namedEquipment.licensePlate}
                         </td>
                         <td className="left_td">
-                            {technic.carBrand}
+                            {technic.namedEquipment.licensePlate}
                         </td>
                         <td className="left_td">
-                        {technic.equipmentType ? technic.equipmentType.type : 'Неизвестно'}
+                        {technic.driver}
                         </td>
                         <td className="left_td last_t">
-                        <div className="status">{technic.carBrand}</div><img className="leftVector" src={leftVector} alt="Подробнее" />
+                        <div className="status">{formatDataDate(technic.date)}</div><img className="leftVector" src={leftVector} alt="Подробнее" />
                         </td>
                     </tr>
                 ))}

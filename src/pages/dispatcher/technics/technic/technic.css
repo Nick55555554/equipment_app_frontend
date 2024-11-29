@@ -31,14 +31,14 @@
     background-color: white;
     border-radius: 10px;
     height: 150px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     padding: 20px;
 }
 .agenda{
     background-color: white;
     border-radius: 10px;
     height: 512px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 }
 .bigAnalytish{
     display: flex;
@@ -58,7 +58,7 @@
     background-color: white;
     border-radius: 10px;
     height: 512px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     display: inline-block;
 
 }
@@ -128,24 +128,17 @@
     padding-left: 20px;
 }
 .kalendar{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 90%;
-    width: 40%;
     font-size: 32px;
     font-weight: 600;
     color:rgb(142, 153, 153);
-    border: 1px solid black;
-    
 }
 .smallTable{
-    width: 99%;
+    width: 100%;
     border-radius: 10px;
     height: 400px;
     overflow: auto; 
     border-radius: 10px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     border-collapse: collapse;
 }
 .table_small{
@@ -156,7 +149,7 @@
     border-collapse: collapse;
     table-layout: fixed;
     height: 100%;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     width: 100%;
     overflow: auto;
 }

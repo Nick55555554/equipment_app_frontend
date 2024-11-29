@@ -145,7 +145,6 @@ const Summary_applies = () => {
                                 {apply.state === "NEW" && "Открытая"}
                                 {apply.state === "CLOSED" && "В работе"}
                                 {apply.state === "ARCHIVED" && "В архиве"}
-                                {apply.state !== "NEW" && apply.state !== "IN_PROGRESS" && apply.state !== "ARCHIVED" && "Неизвестный статус"}
                             </div>
                             
                         </td>

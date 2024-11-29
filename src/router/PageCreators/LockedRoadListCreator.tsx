@@ -9,7 +9,7 @@ export const useLockedRoadListRouter = () => {
     
     const createLockedRoadListRoute = (number:string) => {
         const newList = {
-            path: `/lockedroadList${number}`,
+            path: `/dispatcher/locked/track/${number}`,
             element: <LockedRoadList number={number} />,
             title: 'Главная Страница'
         };

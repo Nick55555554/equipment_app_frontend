@@ -66,6 +66,51 @@ interface GetApplyType {
     total?: number;
     requestedEquipment?: RequestedEquipment[];
 }
+interface EquipmentImage {
+    id: number;
+    name: string;
+    image: string;
+}
+
+interface EquipmentType {
+    id: number;
+    type: string;
+    equipment: EquipmentImage;
+}
+
+interface Unit {
+    id: number;
+    address: string;
+    latitude: number;
+    longitude: number;
+}
+
+interface Base {
+    id: number;
+    unit: Unit;
+    address: string;
+    latitude: number;
+    longitude: number;
+}
+
+interface OnBaseEquipment {
+    id: number;
+    licensePlate: string;
+    carBrand: string;
+    base: Base;
+    equipmentType: EquipmentType;
+    isActive: boolean;
+    lastWorkPlaceAddress: string;
+    finishTime: string; // ISO 8601 формат
+    fuelType: string;
+    paymentHourly: number;
+    condition: number;
+}
+
+interface RequestType {
+    onBaseEquipment: OnBaseEquipment[];
+    contractorEquipment: any[]; // Можно уточнить тип, если известен
+}
 
 const ApplyToDraw: React.FC<GetApplyType> = ({
     workerName,
@@ -78,14 +123,16 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
     const [technic, setTechnic] = useState<Technic[]>([]);
     const [isPending, setIsPending] = useState<boolean>(false);
     const [showTechnic, setShowTechnic] = useState<boolean>(false);
+    const [showTechnic2, setShowTechnic2] = useState<boolean>(false);
     const settingsApplies = useRef<HTMLDivElement | null>(null);
     const [selectedTechnics, setSelectedTechnics] = useState<getEquipmentType[]>([]);
     const [kolvo, setKolvo] = useState<number>(1);
     const [typeClickers, setTypeClickers] = useState<Record<number, boolean>>({});
+    const [selectedCellId, setSelectedCellId] = useState<number | null>(null);
 
-    const closeTechnicWindow = () => {
-        setShowTechnic(false);
-    };
+
+    const [optimalTechnic, setOptimalTechnic] = useState<OnBaseEquipment[]>([])
+    const [optimalTechnic2, setOptimalTechnic2] = useState<any[]>([])
 
     const handleClicker = async (e: React.MouseEvent<HTMLElement>) => {
         setIsPending(true);
@@ -165,6 +212,58 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
         }        
     }, []);
 
+    const closeTechnicWindow = () => {
+        setShowTechnic(false);
+        setShowTechnic2(false);
+    }
+
+    const handleNewLicense = (e: React.MouseEvent<HTMLElement>) => {
+        console.log(selectedCellId)
+        setShowTechnic2(false);
+        const clickedElement = e.target as HTMLElement;
+        const childTd = clickedElement.closest('tr');
+        const number = childTd?.children[1]?.textContent;
+        selectedTechnics?.map((one) => {
+            if (one.id === selectedCellId && number) {
+                console.log(number)
+                one.licensePlateNumber = number;
+            }
+        })
+
+    };
+        const handleTechnicNumberClick = (id: number) : void => {
+        setSelectedCellId(id);
+        const fetchData = async () => {
+            setIsPending(true);
+            const token = document.cookie.split("=")[1];
+            const requestOption: RequestInit = {
+                method: "GET",
+                headers: {
+                    "Content-type": 'application/json',
+                    "ngrok-skip-browser-warning": "69420",
+                    "Authorization": `Bearer ${token}`
+                }
+            };
+            try {
+                const response = await fetch(`${url}/named_equipment/best`, requestOption);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                }
+                const responseData: RequestType = await response.json(); 
+                console.log("Response data:", responseData);
+                setOptimalTechnic(responseData.onBaseEquipment)
+                setOptimalTechnic2(responseData.onBaseEquipment)
+                setShowTechnic2(true);
+                setIsPending(false);
+            } catch (error) {
+                console.log("Fetch error:", error);
+                setIsPending(false);
+            }
+        };
+    
+        fetchData();
+    }
     return (
         <div className="applyToDraw">
             <div className="box">
@@ -190,7 +289,7 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
                                 }}>
                                     {one.equipmentType}
                                 </div>
-                                <div className="technic_number">------</div>
+                                <div className="technic_number" onClick={()=> handleTechnicNumberClick(one.id) }>{one.licensePlateNumber}</div>
                                 <div className="gnoiy">
                                     <img src={musor} style={{ width: '32px', height: "32px", cursor: "pointer" }} onClick={() => {
                                         setSelectedTechnics(prev => prev.filter(technic => technic.selfId !== one.selfId));
@@ -249,6 +348,63 @@ const ApplyToDraw: React.FC<GetApplyType> = ({
                     </div>
                 </>
             )}
+                                   {showTechnic2 ? 
+            <> 
+                <div className="overlay" onClick={closeTechnicWindow}></div>
+                <div className="UptableInWindow">
+                    <label className="label lf">Оптимальные варианты техники</label>
+                    <label className="sm lf">Техника на базе</label>
+                <table className="tableInWindow" style={{borderRadius: "10px"}}>
+                    <thead>
+                        <tr>
+                            <th className="left_th">Номер</th>
+                            <th className="left_th wp">Марка</th>
+                            <th className="left_th we">Состояние машины</th>
+                            <th className="left_th wd">Стоимость</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {optimalTechnic.length > 0 ? (
+                        optimalTechnic.map((technic) => (
+                            <tr key={technic.id} data-id={technic.id} onClick={handleNewLicense}>
+                                <td className="left_td">{technic.carBrand}</td>
+                                <td className=" leeft">{technic.licensePlate}</td>
+                                <td className="left_td">{technic.condition}%</td>
+                                <td className="left_td ">
+                                    {technic.paymentHourly}
+                                </td>
+                            </tr>
+                        ))
+                    ) : ""}
+                        </tbody>
+                </table>
+                <label className="sm lf">Техника подрядчика</label>
+                <table className="tableInWindow" style={{borderRadius: "10px"}}>
+                    <thead>
+                        <tr>
+                            <th className="left_th">Номер</th>
+                            <th className="left_th wp">Марка</th>
+                            <th className="left_th we">Состояние машины</th>
+                            <th className="left_th wd">Стоимость</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {optimalTechnic2.length > 0 ? (
+                        optimalTechnic2.map((technic) => (
+                            <tr key={technic.id} data-id={technic.id} onClick={handleNewLicense}>
+                                <td className="left_td">{technic.carBrand}</td>
+                                <td className=" leeft">{technic.licensePlate}</td>
+                                <td className="left_td">{technic.condition}%</td>
+                                <td className="left_td ">
+                                    {technic.paymentHourly}
+                                </td>
+                            </tr>
+                        ))
+                    ) : ""}
+                        </tbody>
+                </table>
+            </div>
+        </>  : <></>}
         </div>
     );
 };
